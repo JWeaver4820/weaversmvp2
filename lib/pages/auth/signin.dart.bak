@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:weaversmvp/operations/authenticate.dart';
-import 'package:weaversmvp/pages/auth/signup.dart';
 import 'package:weaversmvp/sharing/load.dart';
-import 'package:weaversmvp/utils/page_transition.dart';
 
 //Create the SignIn class used for signing in to the application after signing up
 class SignIn extends StatefulWidget {
 
   //Instantiate toggleview function for whether signin or signup is toggled
-  Function? toggleView;
-  SignIn({ this.toggleView });
-  
+  final Function toggleView;
+  SignIn({ required this.toggleView });
 
   //Create state for signing in
   @override
@@ -55,9 +52,8 @@ String password = '';
             style: TextButton.styleFrom(primary: Colors.teal[50]),
             icon: Icon(Icons.person),
             label: Text('Sign Up'),
-            onPressed: () => {
-              Navigator.pushReplacement(context, PageTransition(widget: SignUp()))
-            }
+            onPressed: () => widget.toggleView(),
+
           ),
 
         ],

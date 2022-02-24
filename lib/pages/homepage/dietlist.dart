@@ -19,7 +19,7 @@ class _DietListState extends State<DietList> {
     return ListView.builder(
       itemCount: diets.length,
       itemBuilder: (context, index) {
-        return ProfileDisplay(diet: diets[index]);
+        return ProfileDisplay(profileInfo: diets[index]);
       },
     );
   }

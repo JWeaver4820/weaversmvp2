@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:weaversmvp/operations/authenticate.dart';
+import 'package:weaversmvp/pages/auth/signin.dart';
+import 'package:weaversmvp/pages/homepage/homepage.dart';
 import 'package:weaversmvp/sharing/load.dart';
+import 'package:weaversmvp/utils/page_transition.dart';
 
 //Create the SignUp class used for signing up to the application for the first time
 class SignUp extends StatefulWidget {
 
   //Instantiate toggleview function for whether signin or signup is toggled
-  final Function toggleView;
-  SignUp({ required this.toggleView });
+  Function? toggleView;
+  SignUp({ this.toggleView });
   //Create state for signing up
   @override
   _SignUpState createState() => _SignUpState();
@@ -21,22 +24,61 @@ class _SignUpState extends State<SignUp> {
   final AuthService _auth = AuthService();
   final _needKey = GlobalKey<FormState>();
 
+  List<String> genders = ['Male', 'Female'];
   //Instantiate field states
   String error = '';
   bool loading = false;
   String email = '';
   String password = '';
+  int currentStep = 0;
+  bool loseWeight = false;
+  bool gainWeight = false;
+  bool maintainWeight = false;
+  bool breakfast = false;
+  bool american = false;
+  bool italian = false;
+  bool mexican = false;
+  bool chinese = false;
+  int? targetBodyWeight;
+  int? height;
+  int? weight;
+  int? age;
+  int? hoursSleep;
+  String? gender;
+  int? selectedGender; 
+  String? day;
+  int? selectedDay;
+  List<String> days = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ];
+  int? daysExercise;
+  String? jobActivity;
+  int? selectedJobActivity;
+  List<String> jobActivities = [
+    'Not active at all',
+    'Slightly active',
+    'Active',
+    'Very active',
+  ];
+  int? maintenanceCalories;
+  
+  
+
+
 
   //Create the widget for signing up
   @override
-  Widget build(BuildContext context) {
-
+  Widget build(BuildContext context) => Scaffold(
     //Create scaffold for the sign up page
-    return loading ? Loading() : Scaffold(
       //Add style to the background of the scaffold
       backgroundColor: Colors.teal[200],
       appBar: AppBar(
-
         //Add style to the bar at the top of the screen
         backgroundColor: Colors.teal[600],
         elevation: 0.5,
@@ -49,18 +91,415 @@ class _SignUpState extends State<SignUp> {
             style: TextButton.styleFrom(primary: Colors.teal[50]),
             icon: const Icon(Icons.person),
             label: const Text('Sign In'),
-            onPressed: () => widget.toggleView(),
+            onPressed: () => {
+              Navigator.pushReplacement(context, PageTransition(widget: SignIn()))
+            }
 
           ),
 
         ],
 
+        
       ),
-
       //Create container for the form, asking the user to sign up with email and password
-      body: Container(
-        //Create spacing for the UI
-        padding: const EdgeInsets.symmetric(vertical: 25.0, horizontal: 60.0),
+      body: Theme(
+        data: Theme.of(context).copyWith(
+        colorScheme: ColorScheme.light(primary: Colors.teal),
+        ),
+        child: Stepper(
+        type: StepperType.vertical,
+        steps: getSteps(),
+        currentStep: currentStep,
+        
+        onStepContinue: () {
+          final isLastStep = currentStep == getSteps().length - 1;
+          if (isLastStep) {
+            print('Completed');
+
+            /// send data to server
+
+          } else {
+            setState(() => currentStep += 1);
+          }
+        },
+        onStepTapped: (step) => setState(() => currentStep = step),
+
+        onStepCancel: 
+            currentStep == 0 ? null 
+            : () => setState(() => currentStep -= 1),
+            controlsBuilder: (context, {onStepContinue, onStepCancel}) {
+              return Container(
+                margin: EdgeInsets.only(top: 50),
+                child: Row(
+                  children: [
+                    (currentStep != 0) ?
+                  Expanded(
+                    child: ElevatedButton(
+                      child: Text('BACK'),
+                      onPressed: onStepCancel,
+                    ),
+                  ) :  SizedBox(width: 0.0, height: 0.0),
+
+                  const SizedBox(width: 12),
+
+
+                    (currentStep < getSteps().length - 1) ?
+                  Expanded(
+                    child: ElevatedButton(
+                      child: Text('NEXT'),
+                      onPressed: onStepContinue,
+                    ),
+                  ) : SizedBox(width: 0.0, height: 0.0),
+                  
+                    
+                ],
+                ),
+              );
+            },
+          
+        ),
+      ),
+  );
+    List<Step> getSteps() => [
+      Step(
+        isActive: currentStep >= 0,
+        title: Text('About'),
+        content: Column(children: <Widget>[
+          Text('Diet Daddy was created because other applications require too much data input, spending up to 2 hours a day \n\nThere are too many buttons and options in other applications\n\nToo much thinking - researching meals to meet specific macros \n\nToo many options of how to diet - keep it simple with 30/40/30 !\n\nAll Diet Daddy meals are based on the 30% Protein, 40% Carbs, and 30% Fat diet\n\nRecommendations are static over time whereas Diet Daddy tracks your metabolism and will change your diet according to fluctuations\n\nA grocery list is provided weekly, no time spent creating this every week!\n\nRecipes and full meal plans are provided weekly from just 1 data point per week\n\n90% of weight change is diet related, regardless of how much you exercise!'),
+        ],
+        ),
+      ),
+      Step(
+        isActive: currentStep >= 1,
+        title: Text('Goals'),
+        content: Column(children: <Widget>[
+          ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                       //The color for the button  
+                       primary: Colors.teal[600], 
+                       //The color on click for sign in button
+                       onPrimary: Colors.black, 
+                ),
+                child: Text(
+                  'Lose Weight',
+                  style: TextStyle(color: Colors.teal[50]),
+                ),
+                //Create state for goals
+                onPressed: loseWeight ? null : () {
+                  setState((){
+                    loseWeight = true;
+                    gainWeight = false;
+                    maintainWeight = false;
+                  });
+                }
+              ),
+          ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                       //The color for the button  
+                       primary: Colors.teal[600], 
+                       //The color on click for sign in button
+                       onPrimary: Colors.black, 
+                ),
+                child: Text(
+                  'Gain Weight',
+                  style: TextStyle(color: Colors.teal[50]),
+                ),
+                //Create state for goals
+                onPressed: gainWeight ? null : () {
+                  setState((){
+                    loseWeight = false;
+                    gainWeight = true;
+                    maintainWeight = false;
+                  });
+                }
+              ),
+          ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                       //The color for the button  
+                       primary: Colors.teal[600], 
+                       //The color on click for sign in button
+                       onPrimary: Colors.black, 
+                ),
+                child: Text(
+                  'Maintain Weight',
+                  style: TextStyle(color: Colors.teal[50]),
+                ),
+                //Create state for goals
+                onPressed: maintainWeight ? null : () {
+                  setState((){
+                    loseWeight = false;
+                    gainWeight = false;
+                    maintainWeight = true;
+                  });
+                }
+              ),
+
+          DropdownButton(
+            hint: Text('Target Body Weight (lbs)'),
+            items: [
+              for(var i = 30; i <= 400; i++) 
+                DropdownMenuItem(child: Text(i.toString()+' lbs'), value: i,)
+            ].toList(),
+            onChanged: (int? selected) => {
+              if (selected != null) {
+                setState(() {
+                  targetBodyWeight = selected;
+                })
+              }
+            },
+            value: targetBodyWeight,
+          ),
+          /*TextFormField(
+            controller: targetBodyWeight,
+            decoration: InputDecoration(labelText: 'Target Body Weight (lbs)')
+          ),*/
+              
+
+        ],
+        ),
+      ),
+      Step(
+        isActive: currentStep >= 2,
+        title: Text('Profile'),
+        content: Column(children: <Widget>[
+            DropdownButton(
+            hint: Text('Height'),
+            items: [
+              for(var i = 24; i <= 96; i++) 
+                DropdownMenuItem(child: Text(i.toString()+'inches'), value: i,)
+            ].toList(),
+            onChanged: (int? selected) => {
+              if (selected != null) {
+                setState(() {
+                  height = selected;
+                })
+              }
+            },
+            value: height,
+          ),
+          DropdownButton(
+            hint: Text('Current Weight'),
+            items: [
+              for(var i = 24; i <= 96; i++) 
+                DropdownMenuItem(child: Text(i.toString()+'lbs'), value: i,)
+            ].toList(),
+            onChanged: (int? selected) => {
+              if (selected != null) {
+                setState(() {
+                  weight = selected;
+                })
+              }
+            },
+            value: weight,
+          ),
+            DropdownButton(
+            hint: Text('Age'),
+            items: [
+              for(var i = 18; i <= 120; i++) 
+                DropdownMenuItem(child: Text(i.toString()+'years'), value: i,)
+            ].toList(),
+            onChanged: (int? selected) => {
+              if (selected != null) {
+                setState(() {
+                  age = selected;
+                })
+              }
+            },
+            value: age,
+          ),
+            DropdownButton(
+            hint: Text('Hours Sleep'),
+            items: [
+              for(var i = 1; i <= 16; i++) 
+                DropdownMenuItem(child: Text(i.toString()+'hours'), value: i,)
+            ].toList(),
+            onChanged: (int? selected) => {
+              if (selected != null) {
+                setState(() {
+                  hoursSleep = selected;
+                })
+              }
+            },
+            value: hoursSleep,
+          ),
+          DropdownButton(
+            hint: Text('Gender'),
+            items: [
+              for (var i = 0; i < genders.length; i++) 
+                DropdownMenuItem(child: Text(genders[i]), value: i,)
+            ].toList(),
+            onChanged: (int? selected) => {
+              if (selected != null) {
+                setState(() {
+                  selectedGender = selected;
+                  gender = genders[selected];
+                })
+              }
+            },
+            value: selectedGender,
+          ),
+            DropdownButton(
+            hint: Text('Which day do you shop for groceries?'),
+            items: [
+              for (var i = 0; i < days.length; i++) 
+                DropdownMenuItem(child: Text(days[i]), value: i,)
+            ].toList(),
+            onChanged: (int? selected) => {
+              if (selected != null) {
+                setState(() {
+                  selectedDay = selected;
+                  day = days[selected];
+                })
+              }
+            },
+            value: selectedDay,
+          ),
+            DropdownButton(
+            hint: Text('Days per week of exercise?'),
+            items: [
+              for(var i = 1; i <= 7; i++) 
+                DropdownMenuItem(child: Text(i.toString()+'days per week'), value: i,)
+            ].toList(),
+            onChanged: (int? selected) => {
+              if (selected != null) {
+                setState(() {
+                  daysExercise = selected;
+                })
+              }
+            },
+            value: daysExercise,
+          ),
+            DropdownButton(
+            hint: Text('How active is your day job?'),
+            items: [
+              for (var i = 0; i < jobActivities.length; i++) 
+                DropdownMenuItem(child: Text(jobActivities[i]), value: i,)
+            ].toList(),
+            onChanged: (int? selected) => {
+              if (selected != null) {
+                setState(() {
+                  selectedJobActivity = selected;
+                  jobActivity = jobActivities[selected];
+                })
+              }
+            },
+            value: selectedJobActivity,
+          ),
+
+        ],
+        ),
+      ),
+      Step(
+        isActive: currentStep >= 3,
+        title: Text('Foods for Next Meal Plan'),
+        content: Column(children: <Widget>[
+          Text('Choose at least 3'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Checkbox(
+                value: breakfast,
+                onChanged: (value) {
+                  setState(() {
+                    breakfast = value!;
+                  });
+                },
+                ),
+              Text("Breakfast"),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Checkbox(
+                value: american,
+                onChanged: (value) {
+                  setState(() {
+                    american = value!;
+                  });
+                },
+                ),
+              Text("American"),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Checkbox(
+                value: italian,
+                onChanged: (value) {
+                  setState(() {
+                    italian = value!;
+                  });
+                },
+                ),
+              Text("Italian"),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Checkbox(
+                value: mexican,
+                onChanged: (value) {
+                  setState(() {
+                    mexican = value!;
+                  });
+                },
+                ),
+              Text("Mexican"),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Checkbox(
+                value: chinese,
+                onChanged: (value) {
+                  setState(() {
+                    chinese = value!;
+                  });
+                },
+                ),
+              Text("Chinese"),
+            ],
+          ),
+
+
+
+        ],
+        )
+
+      ),
+      Step(
+        isActive: currentStep >= 4,
+        title: Text('Maintenance Calories'),
+        content: Column(children: <Widget>[
+          Text('Please calculate your maintenance calories\nby using the calculator found at https://www.mayoclinic.org/healthy-lifestyle/weight-loss/in-depth/calorie-calculator/itt-20402304\n\n'),
+            DropdownButton(
+            hint: Text('Maintenance Calories'),
+            items: [
+              for(var i = 500; i <= 10000; i = i+ 100) 
+                DropdownMenuItem(child: Text(i.toString()+'calories'), value: i,)
+            ].toList(),
+            onChanged: (int? selected) => {
+              if (selected != null) {
+                setState(() {
+                  maintenanceCalories = selected;
+                })
+              }
+            },
+            value: maintenanceCalories,
+          ),
+        ],
+        )
+
+      ),
+      Step(
+        isActive: currentStep >= 5,
+        title: Text('Sign Up'),
+        content: Container(
+        
         child: Form(
           key: _needKey,
           child: Column(
@@ -113,7 +552,19 @@ class _SignUpState extends State<SignUp> {
                         loading = false;
                         error = 'This email is invalid or already exists';
                       });
+                      return;
                     }
+
+                    // ToDo: push state to firebase 
+                    final userProfile = {
+                      age: age,
+                      gender: gender,
+                    };
+                    // await insert profile data here
+
+                    await _auth.signInWithEmailAndPassword(email, password);
+
+                    Navigator.push(context, PageTransition(widget: Homepage()));
                   }
                 }
               ),
@@ -126,7 +577,12 @@ class _SignUpState extends State<SignUp> {
             ],
           ),
         ),
+
+        ),
       ),
-    );
+    ];
+
+
+
+
   }
-}
