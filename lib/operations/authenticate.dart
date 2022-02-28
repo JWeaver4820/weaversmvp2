@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:weaversmvp/global_state.dart';
 import 'package:weaversmvp/modeling/user.dart';
+import 'package:weaversmvp/models/user.dart' as model;
 import 'package:weaversmvp/operations/database.dart';
 import '../global_state.dart';
 
@@ -9,6 +10,8 @@ class AuthService {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User? user;
+
+  final fbDb = DatabaseService();
 
   //Authentication, this is the stream for changing the user
   Stream<FBUser?> get userChange{
@@ -31,44 +34,39 @@ class AuthService {
   }
 
   //Sign In with email and password
-    Future signInWithEmailAndPassword(String email, String password) async{
+  //Sign In with email and password
+    void signInWithEmailAndPassword(String email, String password, Function(model.User?) status) async{
 
-    try{
+   
+    UserCredential credential =  await _auth.signInWithEmailAndPassword(email: email, password: password);
 
-      UserCredential credential =  await _auth.signInWithEmailAndPassword(email: email, password: password);
-      user = credential.user;
-      GlobalState.set('user', user);
-      return credential;
+     final  user = credential.user;
+      if(user != null){
+      fbDb.getUser(user.uid).listen((event) {status.call(event);}, onError: (error){
+        print("MYERROR -> $error");
+        status.call(null);
+      });
 
+      
+      }else{
+        status.call(null);
+      }
     }
-    catch(e){
-      return null;
-    }
-
-  }
 
   //Sign Up with email and password and instantiate default profile information
-    Future registerEmailAndPassword(String email, String password) async{
+    Future<String> registerEmailAndPassword(String email, String password, model.User user) async{
 
-    try{
-
-      UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      User user = result.user!;  
-      GlobalState.set('user', user);
-      await DatabaseService().updateFBUserData(
-        numDaysExercised: '1', 
-        name: 'Name',
-        weight: 'Weight',
-        height: 'Height',
-        targetBodyWeight: 'TBW',
-        age: 18,
-      );
-      return _firebaseUser(user);
-    }
-
-    catch(e){
-      return null;
-    }
+    
+     try{
+        UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      User currentUser = result.user!; 
+      fbDb.updateFBUserData(currentUser.uid, user: user);
+    
+      return Future.value("Your sign up was successful!");
+     }catch(error, trace){
+       print("registerEmailAndPassword => $trace");
+       return Future.error(error);
+     }
 
   }
 

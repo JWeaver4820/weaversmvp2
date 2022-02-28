@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:weaversmvp/modeling/daddy.dart';
 import 'package:weaversmvp/modeling/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:weaversmvp/models/user.dart' as model;
+import 'package:weaversmvp/models/user.dart';
 import '../global_state.dart';
 
 //Create the database class for managing the users profile information
@@ -15,17 +19,20 @@ class DatabaseService {
   //This is the reference to the collection of data used within the application
   final CollectionReference dietData = FirebaseFirestore.instance.collection('diets');
 
-  Future<void> updateFBUserData({String? numDaysExercised, String? name, String? weight, String? height, String? targetBodyWeight, int? age}) async {
+  Future<void> updateFBUserData(uid, {required model.User user}) async {
 
-    return await dietData.doc(uid).set({
-      'name': name ?? '',
-      'numDaysExercised': numDaysExercised ?? '0',
-      'weight': weight ?? '',
-      'height': height ?? '',
-      'targetBodyWeight': targetBodyWeight ?? '',
-      'age': age
-    } );
+    return await dietData.doc(uid).set(user.toJson());
 
+  }
+
+  Stream<User> getUser(String? uid){
+
+
+    return  dietData.doc(uid).snapshots().map((event){
+    
+      final data = jsonEncode(event.data());
+      return  User.fromJson(Map.from(jsonDecode(data)));
+    });
   }
 
   //Get the list of profiles from the snapshot

@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:weaversmvp/dialogs/progress_dialog.dart';
+import 'package:weaversmvp/models/user.dart';
 import 'package:weaversmvp/operations/authenticate.dart';
+import 'package:weaversmvp/operations/database.dart';
 import 'package:weaversmvp/pages/auth/signin.dart';
+import 'package:weaversmvp/pages/homepage/home_screen_viewmodel.dart';
 import 'package:weaversmvp/pages/homepage/homepage.dart';
 import 'package:weaversmvp/sharing/load.dart';
 import 'package:weaversmvp/utils/page_transition.dart';
+import 'package:weaversmvp/pages/homepage/home_page_screen.dart';
 
 //Create the SignUp class used for signing up to the application for the first time
 class SignUp extends StatefulWidget {
@@ -23,6 +28,7 @@ class _SignUpState extends State<SignUp> {
   //Create operation and key request used for authentication
   final AuthService _auth = AuthService();
   final _needKey = GlobalKey<FormState>();
+
 
   List<String> genders = ['Male', 'Female'];
   //Instantiate field states
@@ -545,26 +551,24 @@ class _SignUpState extends State<SignUp> {
                 //Create state for username / password creation - authentication, store in Firebase database
                 onPressed: () async {
                   if(_needKey.currentState!.validate()){
-                    setState(() => loading = true);
-                    dynamic result = await _auth.registerEmailAndPassword(email, password);
-                    if(result == null) {
-                      setState(() {
-                        loading = false;
-                        error = 'This email is invalid or already exists';
-                      });
-                      return;
-                    }
-
+                        Dialogs.showLoading(context);
                     // ToDo: push state to firebase 
-                    final userProfile = {
-                      age: age,
-                      gender: gender,
-                    };
+                    final user = User(age : age,
+                     height: height, weight: weight, targetBodyWeight: targetBodyWeight);
                     // await insert profile data here
+                    final result = _auth.registerEmailAndPassword(email, password, user);
+                    result.then((value) {
+                        Navigator.of(context).pushAndRemoveUntil(PageTransition(widget:  HomePageScreen(homeScreenViewModel: HomeScreenViewModel(DatabaseService()) ,)), (se) => false);
+                    }, onError: (error){
+                          // Display error
+                          ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(content: Text(error.toString())));
+                             Navigator.of(context).pop();
+                    });
 
-                    await _auth.signInWithEmailAndPassword(email, password);
+                   // await _auth.signInWithEmailAndPassword(email, password);
 
-                    Navigator.push(context, PageTransition(widget: Homepage()));
+                   // Navigator.push(context, PageTransition(widget: Homepage()));
                   }
                 }
               ),
@@ -581,6 +585,7 @@ class _SignUpState extends State<SignUp> {
         ),
       ),
     ];
+
 
 
 

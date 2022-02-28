@@ -145,7 +145,7 @@ class _SettingsFormState extends State<SettingsForm> {
                   //Properties changed and written to the database after pressing the update profile button
                   onPressed: () async {
 
-                    if(_needKey.currentState!.validate()){
+/*                     if(_needKey.currentState!.validate()){
 
                       await DatabaseService().updateFBUserData(
 
@@ -160,7 +160,7 @@ class _SettingsFormState extends State<SettingsForm> {
 
                       Navigator.pop(context);
 
-                    }
+                    } */
 
                   }
                 ),

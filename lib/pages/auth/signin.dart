@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:weaversmvp/models/user.dart';
 import 'package:weaversmvp/operations/authenticate.dart';
+import 'package:weaversmvp/operations/database.dart';
 import 'package:weaversmvp/pages/auth/signup.dart';
+import 'package:weaversmvp/pages/homepage/home_page_screen.dart';
+import 'package:weaversmvp/pages/homepage/home_screen_viewmodel.dart';
 import 'package:weaversmvp/sharing/load.dart';
 import 'package:weaversmvp/utils/page_transition.dart';
+import 'package:weaversmvp/utils/user_manager.dart';
 
 //Create the SignIn class used for signing in to the application after signing up
 class SignIn extends StatefulWidget {
@@ -124,17 +129,23 @@ String password = '';
                 ),
 
                 //Create state for username / password invalid - authentication
-                onPressed: () async {
+                onPressed: () {
                  if(_needKey.currentState!.validate()){                
-                    setState(() => loading = true);    
-                    dynamic result = await _authenticating.signInWithEmailAndPassword(email, password);
-                    if(result == null){                      
-                      setState(()  {
-                        loading = false;
-                        noInput = 'Could not sign in, please check your email and password';                        
-                      });
-                    }
-                  }
+                    _authenticating.signInWithEmailAndPassword(email, password, (user){
+                     if(user == null){
+                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("User data is empty")));
+                   }else{
+                    // UserManager.saveUser(user);
+                           Navigator.of(context).pushAndRemoveUntil(PageTransition(widget: 
+                            HomePageScreen(homeScreenViewModel: HomeScreenViewModel(DatabaseService()) ,)), (se) => false);
+                  
+                   }
+
+                    });
+                  
+                }
+                
+                
                 }),
                 
                 //Create case for noInput

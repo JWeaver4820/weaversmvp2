@@ -1,7 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:weaversmvp/operations/database.dart';
 import 'package:weaversmvp/pages/auth/signup.dart';
 import 'package:weaversmvp/pages/auth/signin.dart';
+import 'package:weaversmvp/pages/homepage/home_page_screen.dart';
+import 'package:weaversmvp/pages/homepage/home_screen_viewmodel.dart';
 import 'package:weaversmvp/pages/homepage/homepage.dart';
 import 'package:weaversmvp/pages/welcome/welcome.dart';
 import 'package:weaversmvp/pages/wrapper.dart';
@@ -26,11 +29,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
       return MaterialApp(
+
       routes: {
         '/': (context) => Welcome(),
         '/signin': (context) => SignIn(),
         '/signup': (context) => SignUp(),
-        '/homepage': (context) => Homepage(),
+        '/homepage': (context) => HomePageScreen(homeScreenViewModel: HomeScreenViewModel(DatabaseService()),),
       },
     );
     /*return StreamProvider<FBUser?>.value(
