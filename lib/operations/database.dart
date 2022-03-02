@@ -10,6 +10,15 @@ import '../global_state.dart';
 //Create the database class for managing the users profile information
 class DatabaseService {
 
+   static final DatabaseService _INSTANCE = DatabaseService._internal();
+
+   DatabaseService._internal();
+
+
+  DatabaseService();
+  
+   static DatabaseService get instance => _INSTANCE;
+
   get uid {
 
     return GlobalState.get('user')?.uid;
@@ -25,13 +34,23 @@ class DatabaseService {
 
   }
 
-  Stream<User> getUser(String? uid){
+  Stream<User> getUser(String? uid) async*{
+
+    /*
+      return stream
+
+      stream.map
+    */
 
 
-    return  dietData.doc(uid).snapshots().map((event){
+    yield*  dietData.doc(uid).snapshots().map((event){
+
     
-      final data = jsonEncode(event.data());
-      return  User.fromJson(Map.from(jsonDecode(data)));
+      final data =jsonEncode(event.data());
+      final map = jsonDecode(data);
+      print("objec-t ${ User.fromJson(Map.from(map)).toJson()}");
+      return User.fromJson(Map.from(map));
+      
     });
   }
 

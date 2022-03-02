@@ -7,8 +7,8 @@ class User{
   int? targetBodyWeight;
   int? age;
 
-  User({required this.age, required this.height,
-   required this.targetBodyWeight, required this.weight});
+  User({ this.age, this.height,
+    this.targetBodyWeight, this.weight});
 
 
   User.fromJson(Map<String, dynamic> json){

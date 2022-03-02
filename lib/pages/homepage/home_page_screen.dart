@@ -3,8 +3,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:weaversmvp/models/user.dart' as model;
+import 'package:weaversmvp/operations/database.dart';
+import 'package:weaversmvp/pages/auth/signup.dart';
+import 'package:weaversmvp/pages/auth/subpages/mealplan.dart';
+import 'package:weaversmvp/pages/auth/subpages/metabolism.dart';
+import 'package:weaversmvp/pages/auth/subpages/profile_screen.dart';
+import 'package:weaversmvp/pages/homepage/page_item.dart';
+import 'package:weaversmvp/pages/homepage/settingsform.dart';
+import 'package:weaversmvp/pages/welcome/welcome.dart';
 
 import 'home_screen_viewmodel.dart';
+import 'package:weaversmvp/utils/dart_exts.dart';
 
 class HomePageScreen extends StatefulWidget{
   HomeScreenViewModel? homeScreenViewModel;
@@ -22,10 +31,31 @@ class HomePageScreenState extends State<HomePageScreen>{
 
     Widget get _defaultMargin  => const SizedBox(height: 30,);
 
+    final PageController _pageController = PageController();
+
+    final homeScreenViewModel = HomeScreenViewModel(DatabaseService());
+
+
+    @override
+  void initState() {
+    homeScreenViewModel.logOut.listen((event) {
+      context.startNewTaskPage(child: Welcome());
+
+    }, onError: (error){
+    ScaffoldMessenger.of(context)
+    .showSnackBar(SnackBar(content: Text(error.toString())));
+    });
+
+    
+    super.initState();
+  }
+
   
   @override
   Widget build(BuildContext context) {
-    widget.homeScreenViewModel?.getUserData();
+ 
+   homeScreenViewModel.getUserData();
+
     return Scaffold(
       appBar: AppBar(
 
@@ -40,7 +70,7 @@ class HomePageScreenState extends State<HomePageScreen>{
               icon: const Icon(Icons.person),
               label: const Text('Sign Out'),
               onPressed: () async {
-               // await _authService.signOut();
+               homeScreenViewModel.signOut();
               },
 
             ),
@@ -51,7 +81,7 @@ class HomePageScreenState extends State<HomePageScreen>{
               icon: const Icon(Icons.settings),
               label: const Text('Edit Profile'),
               onPressed: (){
-
+                _showSettingsPanel();
               },
 
             )
@@ -75,18 +105,47 @@ class HomePageScreenState extends State<HomePageScreen>{
   }
 
 
+    void _showSettingsPanel() {
+
+      showModalBottomSheet(
+
+        context: context, builder: (context) {
+
+        return Container(
+
+          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
+          child: SettingsForm(),
+
+        );
+
+      }
+
+      );
+
+    }
+
   Widget _buildTopButton(){
-    List<String> menus = ["Meal Plan", "Metabolism", "Profile"];
+
+    List<PageItem> menus = [PageItem(page: 0, title: "Meal Plan"),
+     PageItem(page: 1, title: "Metabolism"),
+      PageItem(page: 2, title:  "Profile")];
     return Row(
-      children:menus.map((e) => Expanded(child:  Container
+      children:menus.map((e) => Expanded(child: InkWell(
+        onTap: (){
+          // Change page
+          _pageController.jumpToPage(e.page);
+       
+        },
+        child: Container
       (alignment: Alignment.center,
       margin: const EdgeInsets.only(right: 12),
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black, width: 3)
       ),
-       child: Text(e),
-       ))).toList(),
+       child: Text(e.title),
+       ),
+      ))).toList(),
     );
   }
 
@@ -97,9 +156,9 @@ class HomePageScreenState extends State<HomePageScreen>{
       const Expanded(child: ClipRRect(child: Icon(Icons.ac_unit,
        color: Colors.amber, size: 100,), ), flex: 0,),
       Expanded(
-      
+      flex: 2,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
         children: const [
           Text("Text Text"),
              Text("Text Text2"),
@@ -113,32 +172,27 @@ class HomePageScreenState extends State<HomePageScreen>{
   }
 
   Widget _buildBody(){
-    return StreamBuilder<model.User>(builder: (context, snapshot){
-      final user = snapshot.data;
-      return user == null ? const Center(child: CircularProgressIndicator(),): Column(
+
+    return Container(
+      width: double.maxFinite,
+      height: double.maxFinite,
+      child: PageView(
+        
+      controller: _pageController,
         children: [
-          _buildItem(user.age),
-          _buildItem(user.height),
-          _buildItem(user.weight),
-          _buildItem(user.targetBodyWeight)
+          const MealPlanScreen(),
+         const MetabolismScreen(),
+          ProfileScreen(homeScreenViewModel:  
+         homeScreenViewModel
+          )
         ],
-      );
-    }, stream: widget.homeScreenViewModel?.profile,);
+    ));
   }
 
-  Widget _buildItem(dynamic data){
-    return Container(
-  
-  margin: const EdgeInsets.only(top: 10),
-        decoration: const BoxDecoration(
-        color: Colors.blueGrey
-      ),
-      child: Text(data.toString(), style: TextStyle(color: Colors.white) ), height: 40, width: double.maxFinite,);
-  }
 
   @override
   void dispose() {
-   widget.homeScreenViewModel?.dispose();
+   homeScreenViewModel.dispose();
     super.dispose();
   }
 
