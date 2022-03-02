@@ -30,28 +30,32 @@ class _SignUpState extends State<SignUp> {
   final _needKey = GlobalKey<FormState>();
 
 
-  List<String> genders = ['Male', 'Female'];
   //Instantiate field states
+  //admin, misc fields
   String error = '';
   bool loading = false;
   String email = '';
   String password = '';
   int currentStep = 0;
-  bool loseWeight = false;
-  bool gainWeight = false;
-  bool maintainWeight = false;
-  bool breakfast = false;
-  bool american = false;
-  bool italian = false;
-  bool mexican = false;
-  bool chinese = false;
+
+  //int fields
   int? targetBodyWeight;
   int? height;
   int? weight;
   int? age;
   int? hoursSleep;
+  int? daysExercise;
+  int? maintenanceCalories;
+
+  //String fields
+  String? loseWeight;
+  String? gainWeight;
+  String? maintainWeight;
+
   String? gender;
   int? selectedGender; 
+  List<String> genders = ['Male', 'Female'];
+
   String? day;
   int? selectedDay;
   List<String> days = [
@@ -63,7 +67,7 @@ class _SignUpState extends State<SignUp> {
     'Friday',
     'Saturday',
   ];
-  int? daysExercise;
+
   String? jobActivity;
   int? selectedJobActivity;
   List<String> jobActivities = [
@@ -72,8 +76,19 @@ class _SignUpState extends State<SignUp> {
     'Active',
     'Very active',
   ];
-  int? maintenanceCalories;
+
+  //bool fields
+/*   bool? breakfast;
+  bool? american;
+  bool? italian;
+  bool? mexican;
+  bool? chinese; */
   
+  bool breakfast = false;
+  bool american = false;
+  bool italian = false;
+  bool mexican = false;
+  bool chinese = false;
   
 
 
@@ -191,11 +206,11 @@ class _SignUpState extends State<SignUp> {
                   style: TextStyle(color: Colors.teal[50]),
                 ),
                 //Create state for goals
-                onPressed: loseWeight ? null : () {
+                onPressed : loseWeight != null ? null : () {
                   setState((){
-                    loseWeight = true;
-                    gainWeight = false;
-                    maintainWeight = false;
+                    loseWeight = "Lose weight";
+                    gainWeight = null;
+                    maintainWeight = null;
                   });
                 }
               ),
@@ -211,11 +226,11 @@ class _SignUpState extends State<SignUp> {
                   style: TextStyle(color: Colors.teal[50]),
                 ),
                 //Create state for goals
-                onPressed: gainWeight ? null : () {
+                onPressed : gainWeight != null ? null : () {
                   setState((){
-                    loseWeight = false;
-                    gainWeight = true;
-                    maintainWeight = false;
+                    loseWeight = null;
+                    gainWeight = "Gain weight";
+                    maintainWeight = null;
                   });
                 }
               ),
@@ -231,11 +246,11 @@ class _SignUpState extends State<SignUp> {
                   style: TextStyle(color: Colors.teal[50]),
                 ),
                 //Create state for goals
-                onPressed: maintainWeight ? null : () {
+                onPressed : maintainWeight != null ? null : () {
                   setState((){
-                    loseWeight = false;
-                    gainWeight = false;
-                    maintainWeight = true;
+                    loseWeight = null;
+                    gainWeight = null;
+                    maintainWeight = "Maintain weight";
                   });
                 }
               ),
@@ -286,7 +301,7 @@ class _SignUpState extends State<SignUp> {
           DropdownButton(
             hint: Text('Current Weight'),
             items: [
-              for(var i = 24; i <= 96; i++) 
+              for(var i = 30; i <= 370; i++) 
                 DropdownMenuItem(child: Text(i.toString()+'lbs'), value: i,)
             ].toList(),
             onChanged: (int? selected) => {
@@ -406,6 +421,7 @@ class _SignUpState extends State<SignUp> {
               Checkbox(
                 value: breakfast,
                 onChanged: (value) {
+            
                   setState(() {
                     breakfast = value!;
                   });
@@ -420,6 +436,7 @@ class _SignUpState extends State<SignUp> {
               Checkbox(
                 value: american,
                 onChanged: (value) {
+            
                   setState(() {
                     american = value!;
                   });
@@ -434,6 +451,7 @@ class _SignUpState extends State<SignUp> {
               Checkbox(
                 value: italian,
                 onChanged: (value) {
+            
                   setState(() {
                     italian = value!;
                   });
@@ -448,6 +466,7 @@ class _SignUpState extends State<SignUp> {
               Checkbox(
                 value: mexican,
                 onChanged: (value) {
+            
                   setState(() {
                     mexican = value!;
                   });
@@ -462,6 +481,7 @@ class _SignUpState extends State<SignUp> {
               Checkbox(
                 value: chinese,
                 onChanged: (value) {
+            
                   setState(() {
                     chinese = value!;
                   });
@@ -554,7 +574,11 @@ class _SignUpState extends State<SignUp> {
                         Dialogs.showLoading(context);
                     // ToDo: push state to firebase 
                     final user = User(age : age,
-                     height: height, weight: weight, targetBodyWeight: targetBodyWeight);
+                     height: height, weight: weight, targetBodyWeight: targetBodyWeight, loseWeight : loseWeight,
+                     gainWeight : gainWeight, maintainWeight : maintainWeight, breakfast : breakfast, 
+                     american : american, italian : italian, mexican : mexican, chinese : chinese,
+                     hoursSleep : hoursSleep, selectedGender : gender, selectedDay : day, 
+                     daysExercise : daysExercise, selectedJobActivity : jobActivity, maintenanceCalories : maintenanceCalories);
                     // await insert profile data here
                     final result = _auth.registerEmailAndPassword(email, password, user);
                     result.then((value) {
