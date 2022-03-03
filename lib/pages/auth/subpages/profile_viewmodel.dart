@@ -14,6 +14,7 @@ class ProfileViewModel {
  final BehaviorSubject<int> _hoursSleep = BehaviorSubject();
  final BehaviorSubject<int> _daysExercise = BehaviorSubject();
  final BehaviorSubject<int> _maintenanceCalories = BehaviorSubject();
+ final BehaviorSubject<String> _goals = BehaviorSubject();
 
 final  BehaviorSubject<String?> _updateProfile = BehaviorSubject();
  Stream<String?> get updateProfile => _updateProfile.stream;
@@ -38,8 +39,10 @@ final  BehaviorSubject<String?> _updateProfile = BehaviorSubject();
   Stream<int> get targetStream => _target.stream;
   Stream<int> get hoursSleep => _hoursSleep.stream;
   Stream<int> get daysExercise => _daysExercise.stream;
+  Stream<String> get goal => _goals.stream;
   Stream<int> get maintenanceCalories => _maintenanceCalories.stream;
-  int? strHeight = 0, strWeight = 0, strAge = 0, strTarget = 0, strHoursSleep = 0, strDaysExercise = 0, strMaintenanceCalories = 0;
+  int? strHeight = 0, strWeight = 0, strAge = 0, strTarget = 0, strHoursSleep = 0, 
+   strDaysExercise = 0, strMaintenanceCalories = 0;
   
   //dropdown string options
 /*   Stream<String> get gainWeight => _gainWeight.stream;
@@ -48,7 +51,7 @@ final  BehaviorSubject<String?> _updateProfile = BehaviorSubject();
   Stream<String> get selectedGender => _selectedGender.stream;
   Stream<String> get selectedJobActivity => _selectedJobActivity.stream;
   Stream<String> get selectedDay => _selectedDay.stream;
-  String? strGender = "", strJobActivity = "", strSelectedDay = "";
+  String? strGender = "", strJobActivity = "", strSelectedDay = "", strGoal;
 
 
 
@@ -81,8 +84,19 @@ final  BehaviorSubject<String?> _updateProfile = BehaviorSubject();
     onSelectedGenderChanged(user.selectedGender);
     onSelectedDayChanged(user.selectedDay);
     onSelectedJobActivityChanged(user.selectedJobActivity);
+    String? goal;
+    if(user.maintainWeight != null){
+      goal = user.maintainWeight;
+    }else if(user.loseWeight != null){
+        goal = user.loseWeight;
+    }else{
+      goal = user.gainWeight;
+    }
+  onGoalChanged(goal);
+  }
 
-
+  List<String?> getGoalList(){
+      return ["Lose Weight", "Maintain Weight", "Gain Weight"];
   }
   
 
@@ -92,11 +106,19 @@ final  BehaviorSubject<String?> _updateProfile = BehaviorSubject();
   }
 
   
+//strGoal
+  void onGoalChanged(String? strGoal){
+    _goals.sink.add(strGoal ?? "");
+    this.strGoal = strGoal;
+  }
+
   void onTargetChanged(int? targetWeight){
     _target.sink.add(targetWeight ?? 0);
     strTarget = targetWeight;
   }
 
+
+  
   
   void onAgeChanged(int? age){
     _age.sink.add(age ?? 0);
@@ -179,6 +201,9 @@ final  BehaviorSubject<String?> _updateProfile = BehaviorSubject();
   }
 
   void doUpdateProfile() async{
+    final loseWeight =  getGoalList()[0];
+    final gainWeight =  getGoalList()[1];
+    final maintainWeight =  getGoalList()[2];
     _updateProfile.sink.add(null);
     final user = model.User(
     age: strAge, 
@@ -188,9 +213,9 @@ final  BehaviorSubject<String?> _updateProfile = BehaviorSubject();
     hoursSleep: strHoursSleep, 
     daysExercise: strDaysExercise,
     maintenanceCalories: strMaintenanceCalories,
-    loseWeight: "",
-    gainWeight: "",
-    maintainWeight: "", 
+    loseWeight: strGoal == loseWeight ? loseWeight : null,
+    gainWeight:  strGoal == gainWeight ? gainWeight : null,
+    maintainWeight:  maintainWeight == strGoal ? maintainWeight : null, 
     breakfast: strBreakfast, 
     american: strAmerican,
     italian: strItalian,

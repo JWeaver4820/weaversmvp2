@@ -105,6 +105,15 @@ class ProfileScreenState extends State<ProfileScreen>{
     // viewModel.setGainWeightChanged(user.gainWeight);
     // viewModel.onBreakfastChanged(false);
 
+    String? goal;
+    if(user.gainWeight != null){
+        goal = user.gainWeight;
+    }else if(user.loseWeight != null){
+        goal = user.loseWeight;
+    }else{
+      goal =user.maintainWeight;
+    }
+
   return Column(
         children: [
           _buildDropDown<int?>(List.generate(120, (val) => 18 +val), user.age, viewModel.ageStream, viewModel.onAgeChanged, suffix :"years old" ),
@@ -112,7 +121,8 @@ class ProfileScreenState extends State<ProfileScreen>{
           _buildDropDown<int?>(List.generate(450, (val) => 50 +val), user.weight, viewModel.weightStream, viewModel.onWeightChanged, suffix : "lbs Current Weight"),
           _buildDropDown<int?>(List.generate(450, (val) => 50 +val), user.targetBodyWeight, viewModel.targetStream, viewModel.onTargetChanged, suffix : "lbs Target Body Weight"),
       
-      
+     _buildDropDown<String?>(viewModel.getGoalList(), goal, viewModel.goal, viewModel.onGoalChanged),
+          
           _buildDropDown<String?>(jobActivities, user.selectedJobActivity, viewModel.selectedJobActivity, viewModel.onSelectedJobActivityChanged),
           _buildDropDown<String?>(["Male", "Female"], user.selectedGender, viewModel.selectedGender, viewModel.onSelectedGenderChanged),
 
