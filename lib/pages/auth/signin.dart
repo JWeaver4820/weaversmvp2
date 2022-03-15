@@ -136,7 +136,7 @@ String password = '';
                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("User data is empty")));
                    }else{
                     // UserManager.saveUser(user);
-                           Navigator?.of(context).pushAndRemoveUntil(PageTransition(widget: 
+                           Navigator.of(context).pushAndRemoveUntil(PageTransition(widget: 
                             HomePageScreen(homeScreenViewModel: HomeScreenViewModel(DatabaseService()) ,)),
                              (se) => false);
                   

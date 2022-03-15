@@ -14,10 +14,6 @@ class ProfileViewModel {
  final BehaviorSubject<int> _hoursSleep = BehaviorSubject();
  final BehaviorSubject<int> _daysExercise = BehaviorSubject();
  final BehaviorSubject<int> _maintenanceCalories = BehaviorSubject();
- final BehaviorSubject<String> _goals = BehaviorSubject();
-
-final  BehaviorSubject<String?> _updateProfile = BehaviorSubject();
- Stream<String?> get updateProfile => _updateProfile.stream;
  
  //Checkbox options
  final BehaviorSubject<bool> _breakfast = BehaviorSubject();
@@ -30,8 +26,8 @@ final  BehaviorSubject<String?> _updateProfile = BehaviorSubject();
  final BehaviorSubject<String> _selectedJobActivity = BehaviorSubject();
  final BehaviorSubject<String> _selectedDay = BehaviorSubject();
  final BehaviorSubject<String> _selectedGender = BehaviorSubject();
+ final BehaviorSubject<String> _goals = BehaviorSubject();
   
-
   //dropdown integer options
   Stream<int> get heightStream => _height.stream;
   Stream<int> get weightStream => _weight.stream;
@@ -39,21 +35,17 @@ final  BehaviorSubject<String?> _updateProfile = BehaviorSubject();
   Stream<int> get targetStream => _target.stream;
   Stream<int> get hoursSleep => _hoursSleep.stream;
   Stream<int> get daysExercise => _daysExercise.stream;
+  
   Stream<String> get goal => _goals.stream;
   Stream<int> get maintenanceCalories => _maintenanceCalories.stream;
   int? strHeight = 0, strWeight = 0, strAge = 0, strTarget = 0, strHoursSleep = 0, 
-   strDaysExercise = 0, strMaintenanceCalories = 0;
+  strDaysExercise = 0, strMaintenanceCalories = 0;
   
   //dropdown string options
-/*   Stream<String> get gainWeight => _gainWeight.stream;
-  Stream<String> get loseWeight => _loseWeight.stream;
-  Stream<String> get maintainWeight => _maintainWeight.stream; */
   Stream<String> get selectedGender => _selectedGender.stream;
   Stream<String> get selectedJobActivity => _selectedJobActivity.stream;
   Stream<String> get selectedDay => _selectedDay.stream;
   String? strGender = "", strJobActivity = "", strSelectedDay = "", strGoal;
-
-
 
   //checkbox boolean options
   Stream<bool> get breakfast => _breakfast.stream;
@@ -62,6 +54,10 @@ final  BehaviorSubject<String?> _updateProfile = BehaviorSubject();
   Stream<bool> get mexican => _mexican.stream;
   Stream<bool> get chinese => _chinese.stream;
   bool? strBreakfast = false, strAmerican = false, strItalian = false, strMexican = false , strChinese = false;
+
+  //update profile
+  final  BehaviorSubject<String?> _updateProfile = BehaviorSubject();
+  Stream<String?> get updateProfile => _updateProfile.stream;
 
   DatabaseService? databaseService = DatabaseService.instance;
 
@@ -85,6 +81,7 @@ final  BehaviorSubject<String?> _updateProfile = BehaviorSubject();
     onSelectedDayChanged(user.selectedDay);
     onSelectedJobActivityChanged(user.selectedJobActivity);
     String? goal;
+
     if(user.maintainWeight != null){
       goal = user.maintainWeight;
     }else if(user.loseWeight != null){
@@ -92,11 +89,11 @@ final  BehaviorSubject<String?> _updateProfile = BehaviorSubject();
     }else{
       goal = user.gainWeight;
     }
-  onGoalChanged(goal);
-  }
+    onGoalChanged(goal);
+    }
 
   List<String?> getGoalList(){
-      return ["Lose Weight", "Maintain Weight", "Gain Weight"];
+      return ["Lose Weight", "Gain Weight", "Maintain Weight"];
   }
   
 
@@ -106,7 +103,7 @@ final  BehaviorSubject<String?> _updateProfile = BehaviorSubject();
   }
 
   
-//strGoal
+  //strGoal
   void onGoalChanged(String? strGoal){
     _goals.sink.add(strGoal ?? "");
     this.strGoal = strGoal;
@@ -116,15 +113,11 @@ final  BehaviorSubject<String?> _updateProfile = BehaviorSubject();
     _target.sink.add(targetWeight ?? 0);
     strTarget = targetWeight;
   }
-
-
-  
   
   void onAgeChanged(int? age){
     _age.sink.add(age ?? 0);
     strAge = age;
   }
-
   
   void onWeightChanged(int? weight){
     _weight.sink.add(weight ?? 0);
@@ -145,19 +138,6 @@ final  BehaviorSubject<String?> _updateProfile = BehaviorSubject();
     _daysExercise.sink.add(daysExercise ?? 0);
     strDaysExercise = daysExercise;
   }
-
-/*     void onLoseWeightChanged(String? loseWeight){
-        this.loseWeight.text = loseWeight ?? "";
-  }
-
-    void setGainWeightChanged(String? gainWeight){
-        this.gainWeight.text = gainWeight ?? "";
-  }
-
-    void onMaintainWeightChanged(String? maintainWeight){
-         this.maintainWeight.text = maintainWeight ?? "";
-         
-  } */
 
     void onBreakfastChanged(bool? breakfast){
          _breakfast.sink.add(breakfast ?? false); 
@@ -200,10 +180,12 @@ final  BehaviorSubject<String?> _updateProfile = BehaviorSubject();
     _selectedJobActivity.sink.add(selectedJobActivity );
   }
 
+  //push profile update
   void doUpdateProfile() async{
     final loseWeight =  getGoalList()[0];
     final gainWeight =  getGoalList()[1];
     final maintainWeight =  getGoalList()[2];
+
     _updateProfile.sink.add(null);
     final user = model.User(
     age: strAge, 
@@ -213,9 +195,11 @@ final  BehaviorSubject<String?> _updateProfile = BehaviorSubject();
     hoursSleep: strHoursSleep, 
     daysExercise: strDaysExercise,
     maintenanceCalories: strMaintenanceCalories,
+    
     loseWeight: strGoal == loseWeight ? loseWeight : null,
     gainWeight:  strGoal == gainWeight ? gainWeight : null,
     maintainWeight:  maintainWeight == strGoal ? maintainWeight : null, 
+
     breakfast: strBreakfast, 
     american: strAmerican,
     italian: strItalian,
@@ -225,6 +209,7 @@ final  BehaviorSubject<String?> _updateProfile = BehaviorSubject();
     selectedDay: strSelectedDay, 
     selectedJobActivity: strJobActivity);
 
+     //update and display update message
      await DatabaseService().updateFBUserData(FirebaseAuth.instance.currentUser?.uid, 
      user: user );
      print("myuser => ${user.toJson()} ");

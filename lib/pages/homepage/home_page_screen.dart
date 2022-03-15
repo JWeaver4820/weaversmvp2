@@ -127,7 +127,7 @@ class HomePageScreenState extends State<HomePageScreen>{
   Widget _buildTopButton(){
 
     List<PageItem> menus = [PageItem(page: 0, title: "Meal Plan"),
-     PageItem(page: 1, title: "Metabolism"),
+     PageItem(page: 1, title: "Metabolic"),
       PageItem(page: 2, title:  "Profile")];
     return Row(
       children:menus.map((e) => Expanded(child: InkWell(

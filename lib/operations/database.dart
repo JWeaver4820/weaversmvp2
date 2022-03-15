@@ -34,6 +34,12 @@ class DatabaseService {
 
   }
 
+   Future<void> updateNewFBUserData(uid, {required model.User user}) async {
+
+    return await dietData.doc(uid).update(user.toJson());
+
+  }
+
   Stream<User> getUser(String? uid) async*{
 
     /*

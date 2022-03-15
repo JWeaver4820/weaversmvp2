@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => Welcome(),
         '/signin': (context) => SignIn(),
         '/signup': (context) => SignUp(),
-        '/homepage': (context) => HomePageScreen(homeScreenViewModel: HomeScreenViewModel(DatabaseService()),),
+        '/homepage': (context) => HomePageScreen(homeScreenViewModel: HomeScreenViewModel(DatabaseService())),
       },
     );
     /*return StreamProvider<FBUser?>.value(
