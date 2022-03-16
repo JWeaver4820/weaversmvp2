@@ -15,44 +15,46 @@ class ProfileViewModel {
  final BehaviorSubject<int> _daysExercise = BehaviorSubject();
  final BehaviorSubject<int> _maintenanceCalories = BehaviorSubject();
  
+ //dropdown String options
+ final BehaviorSubject<String> _selectedJobActivity = BehaviorSubject();
+ final BehaviorSubject<String> _selectedDay = BehaviorSubject();
+ final BehaviorSubject<String> _selectedGender = BehaviorSubject();
+ final BehaviorSubject<String> _goals = BehaviorSubject();
+
  //Checkbox options
  final BehaviorSubject<bool> _breakfast = BehaviorSubject();
  final BehaviorSubject<bool> _american = BehaviorSubject();
  final BehaviorSubject<bool> _italian = BehaviorSubject();
  final BehaviorSubject<bool> _mexican = BehaviorSubject();
  final BehaviorSubject<bool> _chinese = BehaviorSubject();
- 
- //dropdown String options
- final BehaviorSubject<String> _selectedJobActivity = BehaviorSubject();
- final BehaviorSubject<String> _selectedDay = BehaviorSubject();
- final BehaviorSubject<String> _selectedGender = BehaviorSubject();
- final BehaviorSubject<String> _goals = BehaviorSubject();
   
-  //dropdown integer options
+  //Dropdown integer streams
   Stream<int> get heightStream => _height.stream;
   Stream<int> get weightStream => _weight.stream;
   Stream<int> get ageStream => _age.stream;
   Stream<int> get targetStream => _target.stream;
-  Stream<int> get hoursSleep => _hoursSleep.stream;
-  Stream<int> get daysExercise => _daysExercise.stream;
-  
-  Stream<String> get goal => _goals.stream;
-  Stream<int> get maintenanceCalories => _maintenanceCalories.stream;
+  Stream<int> get hoursSleepStream => _hoursSleep.stream;
+  Stream<int> get daysExerciseStream => _daysExercise.stream;
+  Stream<int> get maintenanceCaloriesStream => _maintenanceCalories.stream;
+  //Initialize
   int? strHeight = 0, strWeight = 0, strAge = 0, strTarget = 0, strHoursSleep = 0, 
   strDaysExercise = 0, strMaintenanceCalories = 0;
   
-  //dropdown string options
+  //Dropdown string streams
   Stream<String> get selectedGender => _selectedGender.stream;
   Stream<String> get selectedJobActivity => _selectedJobActivity.stream;
   Stream<String> get selectedDay => _selectedDay.stream;
+  Stream<String> get goal => _goals.stream;
+  //Initialize
   String? strGender = "", strJobActivity = "", strSelectedDay = "", strGoal;
 
-  //checkbox boolean options
+  //Checkbox boolean streams
   Stream<bool> get breakfast => _breakfast.stream;
   Stream<bool> get american =>  _american.stream;
   Stream<bool> get italian => _italian.stream;
   Stream<bool> get mexican => _mexican.stream;
   Stream<bool> get chinese => _chinese.stream;
+  //Initialize
   bool? strBreakfast = false, strAmerican = false, strItalian = false, strMexican = false , strChinese = false;
 
   //update profile
@@ -65,6 +67,7 @@ class ProfileViewModel {
 
   void setDefaults(model.User? user){
     if(user ==  null)return;
+    //Integer variables changed
     onAgeChanged(user.age);
     onHeightChanged(user.height);
     onTargetChanged(user.targetBodyWeight);
@@ -72,16 +75,21 @@ class ProfileViewModel {
     onHoursSleepChanged(user.hoursSleep);
     onMaintenanceCaloriesChanged(user.maintenanceCalories);
     onDaysExerciseChanged(user.daysExercise);
+
+    //String variables changed
+    onSelectedGenderChanged(user.selectedGender);
+    onSelectedDayChanged(user.selectedDay);
+    onSelectedJobActivityChanged(user.selectedJobActivity);
+
+    //Checkbox variables changed
     onBreakfastChanged(user.breakfast);
     onChineseChanged(user.chinese);
     onAmericanChanged(user.american);
     onMexicanChanged(user.mexican);
     onItalianChanged(user.italian);
-    onSelectedGenderChanged(user.selectedGender);
-    onSelectedDayChanged(user.selectedDay);
-    onSelectedJobActivityChanged(user.selectedJobActivity);
-    String? goal;
 
+    //why cant this be above checkbox variables?
+    String? goal;
     if(user.maintainWeight != null){
       goal = user.maintainWeight;
     }else if(user.loseWeight != null){
@@ -91,19 +99,16 @@ class ProfileViewModel {
     }
     onGoalChanged(goal);
     }
-
-  List<String?> getGoalList(){
-      return ["Lose Weight", "Gain Weight", "Maintain Weight"];
-  }
+    List<String?> getGoalList(){
+      return ["Goal: Lose Weight", "Goal: Gain Weight", "Goal: Maintain Weight"];
+    }
   
-
+  //str Changes NEEDS NOTATION
   void onHeightChanged(int? height){
     _height.sink.add(height ?? 0);
     strHeight = height;
   }
 
-  
-  //strGoal
   void onGoalChanged(String? strGoal){
     _goals.sink.add(strGoal ?? "");
     this.strGoal = strGoal;
@@ -173,11 +178,13 @@ class ProfileViewModel {
   void onSelectedDayChanged(String? selectedDay){
       if(selectedDay == null)return;
     _selectedDay.sink.add(selectedDay );
+    strSelectedDay = selectedDay;
   }
 
     void onSelectedJobActivityChanged(String? selectedJobActivity){
       if(selectedJobActivity == null)return;
     _selectedJobActivity.sink.add(selectedJobActivity );
+    strJobActivity = selectedJobActivity;
   }
 
   //push profile update

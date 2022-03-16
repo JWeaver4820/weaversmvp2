@@ -31,11 +31,11 @@ class HomeScreenViewModel extends ProfileViewModel{
       source.listen((event) {
         
       print("object_object => $event");
-   _profile.sink.add(event);
+      _profile.sink.add(event);
       }, onError: (erro){
 
         
-   _profile.addError(erro);
+      _profile.addError(erro);
       });
     }
 

@@ -42,13 +42,6 @@ class DatabaseService {
 
   Stream<User> getUser(String? uid) async*{
 
-    /*
-      return stream
-
-      stream.map
-    */
-
-
     yield*  dietData.doc(uid).snapshots().map((event){
 
     

@@ -181,9 +181,9 @@ class HomePageScreenState extends State<HomePageScreen>{
       controller: _pageController,
         children: [
           const MealPlanScreen(),
-         const MetabolismScreen(),
+          const MetabolismScreen(),
           ProfileScreen(homeScreenViewModel:  
-         homeScreenViewModel
+          homeScreenViewModel
           )
         ],
     ));

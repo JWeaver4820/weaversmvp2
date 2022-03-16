@@ -54,36 +54,30 @@ class _SignUpState extends State<SignUp> {
 
   String? gender;
   int? selectedGender; 
-  List<String> genders = ['Male', 'Female'];
+  List<String> genders = ['Gender: Male', 'Gender: Female'];
 
   String? day;
   int? selectedDay;
   List<String> days = [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
+    'Grocery day: Sunday',
+    'Grocery day: Monday',
+    'Grocery day: Tuesday',
+    'Grocery day: Wednesday',
+    'Grocery day: Thursday',
+    'Grocery day: Friday',
+    'Grocery day: Saturday',
   ];
 
   String? jobActivity;
   int? selectedJobActivity;
   List<String> jobActivities = [
-    'Not active at all',
-    'Slightly active',
-    'Active',
-    'Very active',
+    'Not active at all at day job',
+    'Slightly active at day job',
+    'Active at day job',
+    'Very active at day job',
   ];
 
   //bool fields
-/*   bool? breakfast;
-  bool? american;
-  bool? italian;
-  bool? mexican;
-  bool? chinese; */
-  
   bool breakfast = false;
   bool american = false;
   bool italian = false;
@@ -208,7 +202,7 @@ class _SignUpState extends State<SignUp> {
                 //Create state for goals
                 onPressed : loseWeight != null ? null : () {
                   setState((){
-                    loseWeight = "Lose weight";
+                    loseWeight = "Goal: Lose Weight";
                     gainWeight = null;
                     maintainWeight = null;
                   });
@@ -229,7 +223,7 @@ class _SignUpState extends State<SignUp> {
                 onPressed : gainWeight != null ? null : () {
                   setState((){
                     loseWeight = null;
-                    gainWeight = "Gain weight";
+                    gainWeight = "Goal: Gain Weight";
                     maintainWeight = null;
                   });
                 }
@@ -250,7 +244,7 @@ class _SignUpState extends State<SignUp> {
                   setState((){
                     loseWeight = null;
                     gainWeight = null;
-                    maintainWeight = "Maintain weight";
+                    maintainWeight = "Goal: Maintain Weight";
                   });
                 }
               ),
@@ -287,7 +281,7 @@ class _SignUpState extends State<SignUp> {
             hint: Text('Height'),
             items: [
               for(var i = 24; i <= 96; i++) 
-                DropdownMenuItem(child: Text(i.toString()+'inches'), value: i,)
+                DropdownMenuItem(child: Text(i.toString()+' inches'), value: i,)
             ].toList(),
             onChanged: (int? selected) => {
               if (selected != null) {
@@ -302,7 +296,7 @@ class _SignUpState extends State<SignUp> {
             hint: Text('Current Weight'),
             items: [
               for(var i = 30; i <= 370; i++) 
-                DropdownMenuItem(child: Text(i.toString()+'lbs'), value: i,)
+                DropdownMenuItem(child: Text(i.toString()+' lbs'), value: i,)
             ].toList(),
             onChanged: (int? selected) => {
               if (selected != null) {
@@ -317,7 +311,7 @@ class _SignUpState extends State<SignUp> {
             hint: Text('Age'),
             items: [
               for(var i = 18; i <= 120; i++) 
-                DropdownMenuItem(child: Text(i.toString()+'years'), value: i,)
+                DropdownMenuItem(child: Text(i.toString()+' years'), value: i,)
             ].toList(),
             onChanged: (int? selected) => {
               if (selected != null) {
@@ -332,7 +326,7 @@ class _SignUpState extends State<SignUp> {
             hint: Text('Hours Sleep'),
             items: [
               for(var i = 1; i <= 16; i++) 
-                DropdownMenuItem(child: Text(i.toString()+'hours'), value: i,)
+                DropdownMenuItem(child: Text(i.toString()+' hours'), value: i,)
             ].toList(),
             onChanged: (int? selected) => {
               if (selected != null) {
@@ -379,7 +373,7 @@ class _SignUpState extends State<SignUp> {
             hint: Text('Days per week of exercise?'),
             items: [
               for(var i = 1; i <= 7; i++) 
-                DropdownMenuItem(child: Text(i.toString()+'days per week'), value: i,)
+                DropdownMenuItem(child: Text(i.toString()+' days per week'), value: i,)
             ].toList(),
             onChanged: (int? selected) => {
               if (selected != null) {
@@ -506,7 +500,7 @@ class _SignUpState extends State<SignUp> {
             hint: Text('Maintenance Calories'),
             items: [
               for(var i = 500; i <= 10000; i = i+ 100) 
-                DropdownMenuItem(child: Text(i.toString()+'calories'), value: i,)
+                DropdownMenuItem(child: Text(i.toString()+' calories'), value: i,)
             ].toList(),
             onChanged: (int? selected) => {
               if (selected != null) {
@@ -573,12 +567,20 @@ class _SignUpState extends State<SignUp> {
                   if(_needKey.currentState!.validate()){
                         Dialogs.showLoading(context);
                     // ToDo: push state to firebase 
-                    final user = User(age : age,
-                     height: height, weight: weight, targetBodyWeight: targetBodyWeight, loseWeight : loseWeight,
-                     gainWeight : gainWeight, maintainWeight : maintainWeight, breakfast : breakfast, 
-                     american : american, italian : italian, mexican : mexican, chinese : chinese,
-                     hoursSleep : hoursSleep, selectedGender : gender, selectedDay : day, 
-                     daysExercise : daysExercise, selectedJobActivity : jobActivity, maintenanceCalories : maintenanceCalories);
+                    final user = User(
+                     //Integer variables pushed to Firebase
+                     age : age, height: height, weight: weight, targetBodyWeight: targetBodyWeight, 
+                     hoursSleep : hoursSleep, daysExercise : daysExercise, maintenanceCalories : maintenanceCalories,
+
+                     //Checkbox variables pushed to Firebase
+                     breakfast : breakfast, american : american, italian : italian, 
+                     mexican : mexican, chinese : chinese,
+
+                     //Dropdown String variables pushed to Firebase
+                     loseWeight : loseWeight, gainWeight : gainWeight, maintainWeight : maintainWeight,
+                     selectedGender : gender, 
+                     selectedDay : day, 
+                     selectedJobActivity : jobActivity);
                     // await insert profile data here
                     final result = _auth.registerEmailAndPassword(email, password, user);
                     result.then((value) {

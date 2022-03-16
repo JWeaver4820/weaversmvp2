@@ -101,45 +101,38 @@ class ProfileScreenState extends State<ProfileScreen>{
 
     final viewModel = widget.homeScreenViewModel;
 
-   // viewModel.generateList([user.mexican, user.chinese, user.italian, user.breakfast, user.american]);
-    // viewModel.setGainWeightChanged(user.gainWeight);
-    // viewModel.onBreakfastChanged(false);
-
     String? goal;
     if(user.gainWeight != null){
         goal = user.gainWeight;
     }else if(user.loseWeight != null){
         goal = user.loseWeight;
     }else{
-      goal =user.maintainWeight;
+      goal = user.maintainWeight;
     }
 
   return Column(
         children: [
-          _buildDropDown<int?>(List.generate(120, (val) => 18 +val), user.age, viewModel.ageStream, viewModel.onAgeChanged, suffix :"years old" ),
+          //Integer edit profile options
           _buildDropDown<int?>(List.generate(72, (val) => 24 +val), user.height, viewModel.heightStream, viewModel.onHeightChanged,suffix : "inches tall"),
           _buildDropDown<int?>(List.generate(450, (val) => 50 +val), user.weight, viewModel.weightStream, viewModel.onWeightChanged, suffix : "lbs Current Weight"),
+          _buildDropDown<int?>(List.generate(120, (val) => 18 +val), user.age, viewModel.ageStream, viewModel.onAgeChanged, suffix :"years old" ),
           _buildDropDown<int?>(List.generate(450, (val) => 50 +val), user.targetBodyWeight, viewModel.targetStream, viewModel.onTargetChanged, suffix : "lbs Target Body Weight"),
-      
-          _buildDropDown<String?>(viewModel.getGoalList(), goal, viewModel.goal, viewModel.onGoalChanged),
-          
-          _buildDropDown<String?>(jobActivities, user.selectedJobActivity, viewModel.selectedJobActivity, viewModel.onSelectedJobActivityChanged),
-          _buildDropDown<String?>(["Male", "Female"], user.selectedGender, viewModel.selectedGender, viewModel.onSelectedGenderChanged),
+          _buildDropDown<int?>(List.generate(12, (val) =>   1 +val), user.hoursSleep, viewModel.hoursSleepStream, viewModel.onHoursSleepChanged, suffix : "hours of sleep/night"),
+          _buildDropDown<int?>(List.generate(7, (val) =>    1 +val), user.daysExercise, viewModel.daysExerciseStream, viewModel.onDaysExerciseChanged, suffix : "days exercise/week"),
+          _buildDropDown<int?>(List.generate(6000, (val) => 100 +val), user.maintenanceCalories, viewModel.maintenanceCaloriesStream, viewModel.onMaintenanceCaloriesChanged, suffix : "maintenance calories/day"),
 
+          //String edit profile options
+          _buildDropDown<String?>(["Gender: Male", "Gender: Female"], user.selectedGender, viewModel.selectedGender, viewModel.onSelectedGenderChanged),
+          _buildDropDown<String?>(viewModel.getGoalList(), goal, viewModel.goal, viewModel.onGoalChanged),
+          _buildDropDown<String?>(["Not active at all at day job", "Slightly active at day job", "Active at day job", "Very active at day job"], user.selectedJobActivity, viewModel.selectedJobActivity, viewModel.onSelectedJobActivityChanged),
+          _buildDropDown<String?>(["Grocery day: Sunday", "Grocery day: Monday", "Grocery day: Tuesday", "Grocery day: Wednesday", "Grocery day: Thursday", "Grocery day: Friday", "Grocery day: Saturday"], user.selectedDay, viewModel.selectedDay, viewModel.onSelectedDayChanged),
+
+          //Checkbox edit profile options
           _buildCheckboxes(user.breakfast, "Breakfast", viewModel.breakfast, viewModel.onBreakfastChanged),
           _buildCheckboxes(user.mexican, "Mexican", viewModel.mexican, viewModel.onMexicanChanged),
           _buildCheckboxes(user.chinese, "Chinese", viewModel.chinese, viewModel.onChineseChanged),
           _buildCheckboxes(user.italian, "Italian", viewModel.italian,  viewModel.onItalianChanged),
           _buildCheckboxes(user.american, "American", viewModel.american,  viewModel.onAmericanChanged),
-
-         /* StreamBuilder<List<String?>>(builder: (_, snapshot){
-            final list = snapshot
-            return _buildDropDown(snapshot, value, stream, (p0) => null, suffix)
-          })
-          _buildDropDown<String?>(List.generate(450, (val) => 50 +val), user.selectedDay, viewModel.selectedDay, viewModel.onSelectedDayChanged, "lbs Current Weight"),
-          _buildDropDown<int?>(List.generate(450, (val) => 50 +val), user.daysExercise, viewModel.daysExercise, viewModel.onDaysExerciseChanged, "lbs Current Weight"),
-          _buildDropDown<String?>(List.generate(450, (val) => 50 +val), user.selectedJobActivity, viewModel.selectedJobActivity, viewModel.onSelectedJobActivityChanged, "lbs Current Weight"),
-          _buildDropDown<String?>(List.generate(450, (val) => 50 +val), user.maintenanceCalories, viewModel.maintenanceCalories, viewModel.onMaintenanceCaloriesChanged, "lbs Current Weight"),*/
         ],
       );
   }
@@ -159,30 +152,6 @@ class ProfileScreenState extends State<ProfileScreen>{
     );
     }, stream: stream,);  
   }
-
-
- /* Widget _buildItem(dynamic data){
-    return Container(
-  
-  margin: const EdgeInsets.only(top: 10),
-        decoration: const BoxDecoration(
-        color: Colors.blueGrey
-      ),
-      child: Text(data.toString(), style: TextStyle(color: Colors.white) ), height: 40,
-       width: double.maxFinite,);
-
-       Thirty
-  }*/
-
-/*   Widget _buildTextField( TextEditingController controller){
-    return TextField(
-        controller: controller,
-        readOnly: isEditProfile,
-        textCapitalization: TextCapitalization.sentences,
-    );
-
-  } */
-
   
   DropdownMenuItem<T> _buildStreamButton<T>(T e, String suffix){
    
@@ -193,7 +162,7 @@ class ProfileScreenState extends State<ProfileScreen>{
   }
 
   Widget _buildDropDown <T>(List<T> items, T value, Stream<T> stream, Function(T?) onChanged,{ String suffix = ""}){
-  // tempValue =value ;
+  // tempValue = value ;
     return StreamBuilder<T>(builder: (contex, snapshot){
  
       return DropdownButton<T>(items: items.map((value) => _buildStreamButton<T>(value, suffix))
