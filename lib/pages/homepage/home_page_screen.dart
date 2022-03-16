@@ -11,6 +11,7 @@ import 'package:weaversmvp/pages/auth/subpages/profile_screen.dart';
 import 'package:weaversmvp/pages/homepage/page_item.dart';
 import 'package:weaversmvp/pages/homepage/settingsform.dart';
 import 'package:weaversmvp/pages/welcome/welcome.dart';
+import 'package:weaversmvp/weight_scheduler/weight_screen.dart';
 
 import 'home_screen_viewmodel.dart';
 import 'package:weaversmvp/utils/dart_exts.dart';
@@ -38,6 +39,7 @@ class HomePageScreenState extends State<HomePageScreen>{
 
     @override
   void initState() {
+    homeScreenViewModel.runTask();
     homeScreenViewModel.logOut.listen((event) {
       context.startNewTaskPage(child: Welcome());
 
@@ -46,6 +48,15 @@ class HomePageScreenState extends State<HomePageScreen>{
     .showSnackBar(SnackBar(content: Text(error.toString())));
     });
 
+
+  homeScreenViewModel.launchWeight.listen((event) {
+    Navigator.push(context, MaterialPageRoute(builder: (settings){
+        return WeightScreen();
+    }));
+
+  }, onError: (error){
+      print("There is an error => $error");
+  });
     
     super.initState();
   }

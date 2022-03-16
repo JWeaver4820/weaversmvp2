@@ -142,8 +142,8 @@ class _SignUpState extends State<SignUp> {
         onStepCancel: 
             currentStep == 0 ? null 
             : () => setState(() => currentStep -= 1),
-            controlsBuilder: (context, {onStepContinue, onStepCancel}) {
-              return Container(
+            controlsBuilder: (context, details ){
+                 return Container(
                 margin: EdgeInsets.only(top: 50),
                 child: Row(
                   children: [
@@ -613,7 +613,13 @@ class _SignUpState extends State<SignUp> {
     ];
 
 
+  void onStepCancel(){
 
+  }
+
+  void onStepContinue(){
+
+  }
 
 
   }

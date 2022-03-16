@@ -3,8 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:weaversmvp/models/user.dart' as model;
 import 'package:weaversmvp/operations/database.dart';
+import 'package:weaversmvp/weight_scheduler/weight_viewmodel.dart';
 
-class ProfileViewModel {
+class ProfileViewModel extends WeightViewModel{
 
  //dropdown Integer options
  final BehaviorSubject<int> _height = BehaviorSubject();

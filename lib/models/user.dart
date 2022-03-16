@@ -33,10 +33,12 @@ class User{
   bool? mexican;
   bool? chinese;
 
+  Weight? weights;
+
   User({ this.age, required this.height, required this.targetBodyWeight, this.gainWeight, required this.weight, 
           this.maintainWeight, this.loseWeight, this.american,  this.italian, this.mexican, this.chinese, this.breakfast, 
            required this.selectedGender, required this.selectedDay, required this.hoursSleep, required this.daysExercise,
-            required this.selectedJobActivity, required this.maintenanceCalories});
+            required this.selectedJobActivity, required this.maintenanceCalories, this.weights});
 
 
   User.fromJson(Map<String, dynamic> json){
@@ -58,6 +60,7 @@ class User{
     daysExercise = json['daysExercise'];
     selectedJobActivity = json['selectedJobActivity'];
     maintenanceCalories = json['maintenanceCalories'];
+    weights = json['weights'] == null ? null : Weight.fromJson(json['weights']);
   }
 
   Map<String, dynamic> toJson(){
@@ -80,7 +83,26 @@ class User{
     json['daysExercise'] = daysExercise;
     json['selectedJobActivity'] = selectedJobActivity;
     json['maintenanceCalories'] = maintenanceCalories;
+    json['weights'] = weights;
     return json;
   }
 
+}
+
+class Weight{
+  String? weightKey;
+  int? weightValue;
+
+  Weight({required this.weightKey, required this.weightValue});
+
+  factory Weight.fromJson(Map<String, dynamic> json){
+    return Weight(weightKey: json['weightKey'], weightValue: json['weightValue']);
+  }
+
+  Map<String, dynamic> toJson(){
+    Map<String, dynamic> json = {};
+    json['weightKey'] = weightKey;
+    json['weightValue'] = weightValue;
+    return json;
+  }
 }
