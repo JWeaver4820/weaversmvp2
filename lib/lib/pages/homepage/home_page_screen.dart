@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,11 +5,12 @@ import 'package:weaversmvp/models/user.dart' as model;
 import 'package:weaversmvp/operations/database.dart';
 import 'package:weaversmvp/pages/auth/signup.dart';
 import 'package:weaversmvp/pages/auth/subpages/mealplan.dart';
-import 'package:weaversmvp/pages/auth/subpages/metabolism.dart';
+import 'package:weaversmvp/pages/auth/subpages/Metabolism/metabolism.dart';
 import 'package:weaversmvp/pages/auth/subpages/profile_screen.dart';
 import 'package:weaversmvp/pages/homepage/page_item.dart';
 import 'package:weaversmvp/pages/homepage/settingsform.dart';
 import 'package:weaversmvp/pages/welcome/welcome.dart';
+import 'package:weaversmvp/weight_scheduler/weight_screen.dart';
 
 import 'home_screen_viewmodel.dart';
 import 'package:weaversmvp/utils/dart_exts.dart';
@@ -38,7 +38,9 @@ class HomePageScreenState extends State<HomePageScreen>{
 
     @override
   void initState() {
-    homeScreenViewModel.logOut.listen((event) {
+    homeScreenViewModel.runTask();
+    if(mounted){
+      homeScreenViewModel.logOut.listen((event) {
       context.startNewTaskPage(child: Welcome());
 
     }, onError: (error){
@@ -46,6 +48,16 @@ class HomePageScreenState extends State<HomePageScreen>{
     .showSnackBar(SnackBar(content: Text(error.toString())));
     });
 
+
+  homeScreenViewModel.launchWeight.listen((event) {
+    Navigator.push(context, MaterialPageRoute(builder: (settings){
+        return WeightScreen();
+    }));
+
+  }, onError: (error){
+      print("There is an error => $error");
+  });
+    }
     
     super.initState();
   }
@@ -127,7 +139,7 @@ class HomePageScreenState extends State<HomePageScreen>{
   Widget _buildTopButton(){
 
     List<PageItem> menus = [PageItem(page: 0, title: "Meal Plan"),
-     PageItem(page: 1, title: "Metabolism"),
+     PageItem(page: 1, title: "Metabolic"),
       PageItem(page: 2, title:  "Profile")];
     return Row(
       children:menus.map((e) => Expanded(child: InkWell(
@@ -181,9 +193,9 @@ class HomePageScreenState extends State<HomePageScreen>{
       controller: _pageController,
         children: [
           const MealPlanScreen(),
-         const MetabolismScreen(),
+           MetabolismScreen(),
           ProfileScreen(homeScreenViewModel:  
-         homeScreenViewModel
+          homeScreenViewModel
           )
         ],
     ));

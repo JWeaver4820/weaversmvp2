@@ -146,20 +146,15 @@ class _SettingsFormState extends State<SettingsForm> {
                   onPressed: () async {
 
 /*                     if(_needKey.currentState!.validate()){
-
                       await DatabaseService().updateFBUserData(
-
                        numDaysExercised: _currentNumDaysExercised ?? snapshot.data?.numDaysExercised, 
                        name: _currentName ?? snapshot.data?.name, 
                        weight: _currentWeight ?? snapshot.data?.weight,
                        height: _currentHeight ?? snapshot.data?.height,
                        targetBodyWeight: _currentTBW ?? snapshot.data?.targetBodyWeight,
                        age:  _currentAge ?? snapshot.data?.age, 
-
                       );
-
                       Navigator.pop(context);
-
                     } */
 
                   }

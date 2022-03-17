@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:weaversmvp/modeling/daddy.dart';
 import 'package:weaversmvp/modeling/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -34,22 +35,33 @@ class DatabaseService {
 
   }
 
-  Stream<User> getUser(String? uid) async*{
+  
+  Future<void> updateWeight(model.Weight weight) async {
+    final uId = FirebaseAuth.instance.currentUser?.uid ?? "";
 
-    /*
-      return stream
+    return await dietData.doc(uId).collection("weights").doc().set(weight.toJson());
 
-      stream.map
-    */
+  }
 
+
+  Future<List<model.Weight>> getWeights() async{
+    final uId = FirebaseAuth.instance.currentUser?.uid ?? "";
+
+    final result = await dietData.doc(uId).collection("weights").get();
+    print("__>${result.docs[0].data()}");
+    return result.docs.map((e) => Weight.fromJson(e.data())).toList();
+  }
+
+
+  Stream<model.User> getUser(String? uid) async*{
 
     yield*  dietData.doc(uid).snapshots().map((event){
 
     
       final data =jsonEncode(event.data());
       final map = jsonDecode(data);
-      print("objec-t ${ User.fromJson(Map.from(map)).toJson()}");
-      return User.fromJson(Map.from(map));
+      print("objec-t ${model. User.fromJson(Map.from(map)).toJson()}");
+      return model.User.fromJson(Map.from(map));
       
     });
   }

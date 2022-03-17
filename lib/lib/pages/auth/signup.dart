@@ -5,7 +5,7 @@ import 'package:weaversmvp/operations/authenticate.dart';
 import 'package:weaversmvp/operations/database.dart';
 import 'package:weaversmvp/pages/auth/signin.dart';
 import 'package:weaversmvp/pages/homepage/home_screen_viewmodel.dart';
-import 'package:weaversmvp/pages/homepage/homepage.dart';
+// import 'package:weaversmvp/pages/homepage/homepage.dart.bak';
 import 'package:weaversmvp/sharing/load.dart';
 import 'package:weaversmvp/utils/page_transition.dart';
 import 'package:weaversmvp/pages/homepage/home_page_screen.dart';
@@ -30,50 +30,59 @@ class _SignUpState extends State<SignUp> {
   final _needKey = GlobalKey<FormState>();
 
 
-  List<String> genders = ['Male', 'Female'];
   //Instantiate field states
+  //admin, misc fields
   String error = '';
   bool loading = false;
   String email = '';
   String password = '';
   int currentStep = 0;
-  bool loseWeight = false;
-  bool gainWeight = false;
-  bool maintainWeight = false;
-  bool breakfast = false;
-  bool american = false;
-  bool italian = false;
-  bool mexican = false;
-  bool chinese = false;
+
+  //int fields
   int? targetBodyWeight;
   int? height;
   int? weight;
   int? age;
   int? hoursSleep;
+  int? daysExercise;
+  int? maintenanceCalories;
+
+  //String fields
+  String? loseWeight;
+  String? gainWeight;
+  String? maintainWeight;
+
   String? gender;
   int? selectedGender; 
+  List<String> genders = ['Gender: Male', 'Gender: Female'];
+
   String? day;
   int? selectedDay;
   List<String> days = [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
+    'Grocery day: Sunday',
+    'Grocery day: Monday',
+    'Grocery day: Tuesday',
+    'Grocery day: Wednesday',
+    'Grocery day: Thursday',
+    'Grocery day: Friday',
+    'Grocery day: Saturday',
   ];
-  int? daysExercise;
+
   String? jobActivity;
   int? selectedJobActivity;
   List<String> jobActivities = [
-    'Not active at all',
-    'Slightly active',
-    'Active',
-    'Very active',
+    'Not active at all at day job',
+    'Slightly active at day job',
+    'Active at day job',
+    'Very active at day job',
   ];
-  int? maintenanceCalories;
-  
+
+  //bool fields
+  bool breakfast = false;
+  bool american = false;
+  bool italian = false;
+  bool mexican = false;
+  bool chinese = false;
   
 
 
@@ -133,8 +142,8 @@ class _SignUpState extends State<SignUp> {
         onStepCancel: 
             currentStep == 0 ? null 
             : () => setState(() => currentStep -= 1),
-            controlsBuilder: (context, {onStepContinue, onStepCancel}) {
-              return Container(
+            controlsBuilder: (context, details ){
+                 return Container(
                 margin: EdgeInsets.only(top: 50),
                 child: Row(
                   children: [
@@ -191,11 +200,11 @@ class _SignUpState extends State<SignUp> {
                   style: TextStyle(color: Colors.teal[50]),
                 ),
                 //Create state for goals
-                onPressed: loseWeight ? null : () {
+                onPressed : loseWeight != null ? null : () {
                   setState((){
-                    loseWeight = true;
-                    gainWeight = false;
-                    maintainWeight = false;
+                    loseWeight = "Goal: Lose Weight";
+                    gainWeight = null;
+                    maintainWeight = null;
                   });
                 }
               ),
@@ -211,11 +220,11 @@ class _SignUpState extends State<SignUp> {
                   style: TextStyle(color: Colors.teal[50]),
                 ),
                 //Create state for goals
-                onPressed: gainWeight ? null : () {
+                onPressed : gainWeight != null ? null : () {
                   setState((){
-                    loseWeight = false;
-                    gainWeight = true;
-                    maintainWeight = false;
+                    loseWeight = null;
+                    gainWeight = "Goal: Gain Weight";
+                    maintainWeight = null;
                   });
                 }
               ),
@@ -231,11 +240,11 @@ class _SignUpState extends State<SignUp> {
                   style: TextStyle(color: Colors.teal[50]),
                 ),
                 //Create state for goals
-                onPressed: maintainWeight ? null : () {
+                onPressed : maintainWeight != null ? null : () {
                   setState((){
-                    loseWeight = false;
-                    gainWeight = false;
-                    maintainWeight = true;
+                    loseWeight = null;
+                    gainWeight = null;
+                    maintainWeight = "Goal: Maintain Weight";
                   });
                 }
               ),
@@ -272,7 +281,7 @@ class _SignUpState extends State<SignUp> {
             hint: Text('Height'),
             items: [
               for(var i = 24; i <= 96; i++) 
-                DropdownMenuItem(child: Text(i.toString()+'inches'), value: i,)
+                DropdownMenuItem(child: Text(i.toString()+' inches'), value: i,)
             ].toList(),
             onChanged: (int? selected) => {
               if (selected != null) {
@@ -286,8 +295,8 @@ class _SignUpState extends State<SignUp> {
           DropdownButton(
             hint: Text('Current Weight'),
             items: [
-              for(var i = 24; i <= 96; i++) 
-                DropdownMenuItem(child: Text(i.toString()+'lbs'), value: i,)
+              for(var i = 30; i <= 370; i++) 
+                DropdownMenuItem(child: Text(i.toString()+' lbs'), value: i,)
             ].toList(),
             onChanged: (int? selected) => {
               if (selected != null) {
@@ -302,7 +311,7 @@ class _SignUpState extends State<SignUp> {
             hint: Text('Age'),
             items: [
               for(var i = 18; i <= 120; i++) 
-                DropdownMenuItem(child: Text(i.toString()+'years'), value: i,)
+                DropdownMenuItem(child: Text(i.toString()+' years'), value: i,)
             ].toList(),
             onChanged: (int? selected) => {
               if (selected != null) {
@@ -317,7 +326,7 @@ class _SignUpState extends State<SignUp> {
             hint: Text('Hours Sleep'),
             items: [
               for(var i = 1; i <= 16; i++) 
-                DropdownMenuItem(child: Text(i.toString()+'hours'), value: i,)
+                DropdownMenuItem(child: Text(i.toString()+' hours'), value: i,)
             ].toList(),
             onChanged: (int? selected) => {
               if (selected != null) {
@@ -364,7 +373,7 @@ class _SignUpState extends State<SignUp> {
             hint: Text('Days per week of exercise?'),
             items: [
               for(var i = 1; i <= 7; i++) 
-                DropdownMenuItem(child: Text(i.toString()+'days per week'), value: i,)
+                DropdownMenuItem(child: Text(i.toString()+' days per week'), value: i,)
             ].toList(),
             onChanged: (int? selected) => {
               if (selected != null) {
@@ -406,6 +415,7 @@ class _SignUpState extends State<SignUp> {
               Checkbox(
                 value: breakfast,
                 onChanged: (value) {
+            
                   setState(() {
                     breakfast = value!;
                   });
@@ -420,6 +430,7 @@ class _SignUpState extends State<SignUp> {
               Checkbox(
                 value: american,
                 onChanged: (value) {
+            
                   setState(() {
                     american = value!;
                   });
@@ -434,6 +445,7 @@ class _SignUpState extends State<SignUp> {
               Checkbox(
                 value: italian,
                 onChanged: (value) {
+            
                   setState(() {
                     italian = value!;
                   });
@@ -448,6 +460,7 @@ class _SignUpState extends State<SignUp> {
               Checkbox(
                 value: mexican,
                 onChanged: (value) {
+            
                   setState(() {
                     mexican = value!;
                   });
@@ -462,6 +475,7 @@ class _SignUpState extends State<SignUp> {
               Checkbox(
                 value: chinese,
                 onChanged: (value) {
+            
                   setState(() {
                     chinese = value!;
                   });
@@ -486,7 +500,7 @@ class _SignUpState extends State<SignUp> {
             hint: Text('Maintenance Calories'),
             items: [
               for(var i = 500; i <= 10000; i = i+ 100) 
-                DropdownMenuItem(child: Text(i.toString()+'calories'), value: i,)
+                DropdownMenuItem(child: Text(i.toString()+' calories'), value: i,)
             ].toList(),
             onChanged: (int? selected) => {
               if (selected != null) {
@@ -553,8 +567,20 @@ class _SignUpState extends State<SignUp> {
                   if(_needKey.currentState!.validate()){
                         Dialogs.showLoading(context);
                     // ToDo: push state to firebase 
-                    final user = User(age : age,
-                     height: height, weight: weight, targetBodyWeight: targetBodyWeight);
+                    final user = User(
+                     //Integer variables pushed to Firebase
+                     age : age, height: height, weight: weight, targetBodyWeight: targetBodyWeight, 
+                     hoursSleep : hoursSleep, daysExercise : daysExercise, maintenanceCalories : maintenanceCalories,
+
+                     //Checkbox variables pushed to Firebase
+                     breakfast : breakfast, american : american, italian : italian, 
+                     mexican : mexican, chinese : chinese,
+
+                     //Dropdown String variables pushed to Firebase
+                     loseWeight : loseWeight, gainWeight : gainWeight, maintainWeight : maintainWeight,
+                     selectedGender : gender, 
+                     selectedDay : day, 
+                     selectedJobActivity : jobActivity);
                     // await insert profile data here
                     final result = _auth.registerEmailAndPassword(email, password, user);
                     result.then((value) {
@@ -587,7 +613,13 @@ class _SignUpState extends State<SignUp> {
     ];
 
 
+  void onStepCancel(){
 
+  }
+
+  void onStepContinue(){
+
+  }
 
 
   }

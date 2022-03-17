@@ -34,7 +34,6 @@ class AuthService {
   }
 
   //Sign In with email and password
-  //Sign In with email and password
     void signInWithEmailAndPassword(String email, String password, Function(model.User?) status) async{
 
    
