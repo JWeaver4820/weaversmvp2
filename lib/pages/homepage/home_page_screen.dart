@@ -40,7 +40,8 @@ class HomePageScreenState extends State<HomePageScreen>{
     @override
   void initState() {
     homeScreenViewModel.runTask();
-    homeScreenViewModel.logOut.listen((event) {
+    if(mounted){
+      homeScreenViewModel.logOut.listen((event) {
       context.startNewTaskPage(child: Welcome());
 
     }, onError: (error){
@@ -57,6 +58,7 @@ class HomePageScreenState extends State<HomePageScreen>{
   }, onError: (error){
       print("There is an error => $error");
   });
+    }
     
     super.initState();
   }

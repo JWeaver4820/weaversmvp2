@@ -27,9 +27,14 @@ class WeightScreenState extends State<WeightScreen>{
     weightViewModel.updateWeight.listen((event) {
       Navigator.of(context).pop();
     }, onError: (error){
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("$error"), duration: const Duration(seconds: 5),));
+        showMessage(error);
     } );
     super.initState();
+  }
+
+  void showMessage(String msg){
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("$msg"), duration: const Duration(seconds: 5),));
   }
 
 
@@ -71,7 +76,7 @@ class WeightScreenState extends State<WeightScreen>{
                     weightViewModel.updateWeights(int.parse(weightController.text));
 
                   }catch(exception){
-                    print(exception);
+                    showMessage("Sorry mate, that's not a number.");
                   }
          
                 }, child: Text("Proceed")), flex: 0,)
