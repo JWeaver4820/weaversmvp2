@@ -44,6 +44,14 @@ class DatabaseService {
   }
 
 
+  Future<List<model.Weight>> getWeights() async{
+    final uId = FirebaseAuth.instance.currentUser?.uid ?? "";
+
+    final result = await dietData.doc(uId).collection("weights").get();
+    print("__>${result.docs[0].data()}");
+    return result.docs.map((e) => Weight.fromJson(e.data())).toList();
+  }
+
 
   Stream<model.User> getUser(String? uid) async*{
 
