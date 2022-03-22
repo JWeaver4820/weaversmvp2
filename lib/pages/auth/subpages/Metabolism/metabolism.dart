@@ -1,40 +1,71 @@
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:weaversmvp/models/user.dart';
 import 'package:weaversmvp/pages/auth/subpages/Metabolism/weight_list.dart';
+import 'package:weaversmvp/pages/auth/subpages/profile_screen.dart';
+import 'package:weaversmvp/pages/homepage/home_screen_viewmodel.dart';
 
 import '../../../../operations/database.dart';
+import '../../../../weight_scheduler/weight_screen.dart';
 
-class MetabolismScreen extends StatefulWidget{
+/*class MetabolismScreen extends StatefulWidget{
   @override
   MetabolismScreenState createState() {
     return MetabolismScreenState();
   }
 
 
-}
+}*/
 
-class MetabolismScreenState extends State<MetabolismScreen>{
+class MetabolismScreen extends StatelessWidget{
+
+  MetabolismScreen();
 
 
-  List<Widget> subPages = [];
+  BehaviorSubject<int> _pages = BehaviorSubject();
 
   int page = -1;
 
   @override
   Widget build(BuildContext context) {
-    DatabaseService().getWeights();
-   return Container(width: double.maxFinite, height: double.maxFinite, 
-   child:  subPages.isNotEmpty ? Container(width: 100, height: 100, color: Colors.black): Column(
-     children: [
-            _buildButton("Weekly Recorded Weight", () {
-                page +=1;
-                subPages.add(WeightListScreen());
-                setState(() { });
-                print("Helloooo_ $page _ ${subPages.length}");
-            }),
-            _buildButton("Weight Chart", () => null),
-            _buildButton("Current state of metabolism and suggestions", () => null)
-     ],
-   ));
+   // DatabaseService().getWeights();
+   return FutureBuilder<List<Weight>>(builder: (_, snapshot){
+
+
+     List<Widget> subPages = [WeightListScreen(weighList : snapshot.data,)];
+
+     int page = -1;
+     return StreamBuilder<int>(builder: (_, snapshot){
+
+       print("requireData => $page");
+       return WillPopScope(child: page <0 ? Column(
+         children: [
+           _buildButton("Weekly Recorded Weight", () {
+
+             _pages.sink.add(page++);
+           }),
+           _buildButton("Weight Chart", () {
+
+             _pages.sink.add(page++);
+           }),
+           _buildButton("Current State of Metabolism and Suggestions", () {
+
+             _pages.sink.add(page++);
+           })
+
+         ],
+       ): subPages[page], onWillPop: () async {
+
+         if(page >= 0){
+           _pages.sink.add(page--);
+           return false;
+         }else{
+
+           return true;
+         }
+       });
+     }, stream: _pages.stream, initialData: -1,);
+   }, future: DatabaseService().getWeights(), initialData: [],);
   }
 
   Widget _buildButton(String title, Function()? onTap){
@@ -47,5 +78,10 @@ class MetabolismScreenState extends State<MetabolismScreen>{
   void openWeightListScreen(){
 
   }
+
+  /*
+       backgroundColor: MaterialStateProperty.all(Colors.teal)
+
+  */
 
 }

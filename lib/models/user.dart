@@ -1,5 +1,7 @@
 import 'dart:core';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class User{
 
   //admin fields
@@ -92,17 +94,19 @@ class User{
 class Weight{
   String? weightKey;
   int? weightValue;
+  FieldValue? createdAt;
 
-  Weight({required this.weightKey, required this.weightValue});
+  Weight({required this.weightKey, required this.weightValue, required this.createdAt});
 
   factory Weight.fromJson(Map<String, dynamic> json){
-    return Weight(weightKey: json['weightKey'], weightValue: json['weightValue']);
+    return Weight(weightKey: json['weightKey'], weightValue: json['weightValue'], createdAt: json['createdAt']);
   }
 
   Map<String, dynamic> toJson(){
     Map<String, dynamic> json = {};
     json['weightKey'] = weightKey;
     json['weightValue'] = weightValue;
+    json['createdAt'] = createdAt;
     return json;
   }
 }

@@ -21,7 +21,7 @@ class HomeScreenViewModel extends ProfileViewModel{
   final StreamController<model.User> _profileV2 = StreamController.broadcast();
   Stream<model.User> get profileV2 => _profileV2.stream;
 
-  final StreamController<String> _logOut = StreamController.broadcast();
+  final BehaviorSubject<String> _logOut = BehaviorSubject();
   Stream<String> get logOut => _logOut.stream;
 
 

@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +5,7 @@ import 'package:weaversmvp/models/user.dart' as model;
 import 'package:weaversmvp/operations/database.dart';
 import 'package:weaversmvp/pages/auth/signup.dart';
 import 'package:weaversmvp/pages/auth/subpages/mealplan.dart';
-import 'package:weaversmvp/pages/auth/subpages/metabolism.dart';
+import 'package:weaversmvp/pages/auth/subpages/Metabolism/metabolism.dart';
 import 'package:weaversmvp/pages/auth/subpages/profile_screen.dart';
 import 'package:weaversmvp/pages/homepage/page_item.dart';
 import 'package:weaversmvp/pages/homepage/settingsform.dart';
@@ -51,9 +50,11 @@ class HomePageScreenState extends State<HomePageScreen>{
 
 
   homeScreenViewModel.launchWeight.listen((event) {
-    Navigator.push(context, MaterialPageRoute(builder: (settings){
+    if(mounted){
+      Navigator.push(context, MaterialPageRoute(builder: (settings){
         return WeightScreen();
-    }));
+      }));
+    }
 
   }, onError: (error){
       print("There is an error => $error");
@@ -111,7 +112,7 @@ class HomePageScreenState extends State<HomePageScreen>{
         _defaultMargin,
         _buildTopButton(),
         _defaultMargin,
-        Expanded(child: _buildBody(), flex: 0,)
+        _buildBody()
       ],
     ),)),
     );
@@ -190,12 +191,12 @@ class HomePageScreenState extends State<HomePageScreen>{
       width: double.maxFinite,
       height: double.maxFinite,
       child: PageView(
-        
+
       controller: _pageController,
         children: [
           const MealPlanScreen(),
-          const MetabolismScreen(),
-          ProfileScreen(homeScreenViewModel:  
+          MetabolismScreen(),
+          ProfileScreen(homeScreenViewModel:
           homeScreenViewModel
           )
         ],

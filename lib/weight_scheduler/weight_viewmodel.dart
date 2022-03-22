@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ffi';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cron/cron.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
@@ -41,11 +42,9 @@ class WeightViewModel{
     await service.configure(iosConfiguration: IosConfiguration(onBackground: onIOSBackground, onForeground: onStart, autoStart: true),
      androidConfiguration: AndroidConfiguration(onStart: onStart, isForegroundMode: false, autoStart: true));
      
-  scheduler = Timer.periodic(const Duration(seconds: 10), (timer){{
+ scheduler = Timer.periodic(const Duration(seconds: 60), (timer){{
    //  if(!hasLaunched){
-      // _launchWeight.sink.add("");
-      print("RUNNING STILL");
-      
+      _launchWeight.sink.add("");
       }});
   }
 
@@ -65,11 +64,13 @@ class WeightViewModel{
         }*/
     });
   }
-
+//update hi
   void updateWeights(int weightValue) async{
+    final timestamp = FieldValue.serverTimestamp();
+
     final myPushId = DateTime.now().millisecond;
     try{
-       await DatabaseService().updateWeight(Weight(weightKey: "_$myPushId", weightValue: weightValue) );
+       await DatabaseService().updateWeight(Weight(weightKey: "_$myPushId", weightValue: weightValue, createdAt: timestamp ) );
     _updateWeight.sink.add("Weight updated!!");
     }catch(exception){
       _updateWeight.sink.addError(exception);

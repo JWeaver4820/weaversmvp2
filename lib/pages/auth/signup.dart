@@ -619,6 +619,14 @@ class _SignUpState extends State<SignUp> {
 
   void onStepContinue(){
 
+    final isLastStep = currentStep == getSteps().length - 1;
+    if (isLastStep) {
+    print('Completed');
+
+    /// send data to server
+    } else {
+    setState(() => currentStep += 1);
+    }
   }
 
 

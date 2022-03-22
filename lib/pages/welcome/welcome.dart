@@ -102,7 +102,6 @@ class _WelcomeState extends State<Welcome> {
         child: InkWell(
           onTap: () {
             Navigator.push(context, PageTransition(widget: SignUp()));
-
            },
           child: Column(
             children: <Widget>[
