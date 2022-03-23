@@ -24,7 +24,7 @@ class MetabolismScreen extends StatelessWidget{
 
   BehaviorSubject<int> _pages = BehaviorSubject();
 
-  int page = -1;
+  int page = -2;
 
   @override
   Widget build(BuildContext context) {
@@ -32,13 +32,15 @@ class MetabolismScreen extends StatelessWidget{
    return FutureBuilder<List<Weight>>(builder: (_, snapshot){
 
 
+     print("snapshotE => ${snapshot.error}");
+
+    print("snapshot => ${snapshot.data}");
+
      List<Widget> subPages = [WeightListScreen(weighList : snapshot.data,)];
 
-     int page = -1;
      return StreamBuilder<int>(builder: (_, snapshot){
 
-       print("requireData => $page");
-       return WillPopScope(child: page <0 ? Column(
+       return WillPopScope(child: page < 0 ? Column(
          children: [
            _buildButton("Weekly Recorded Weight", () {
 
@@ -65,11 +67,11 @@ class MetabolismScreen extends StatelessWidget{
          }
        });
      }, stream: _pages.stream, initialData: -1,);
-   }, future: DatabaseService().getWeights(), initialData: [],);
+   }, future: DatabaseService().getWeights(),);
   }
 
   Widget _buildButton(String title, Function()? onTap){
-    return ElevatedButton(onPressed: onTap,
+    return ElevatedButton(onPressed: (){onTap?.call();},
      child: Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),), style: ButtonStyle(
        backgroundColor: MaterialStateProperty.all(Colors.teal)
      ),);

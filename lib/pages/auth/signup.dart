@@ -569,7 +569,7 @@ class _SignUpState extends State<SignUp> {
                     // ToDo: push state to firebase 
                     final user = User(
                      //Integer variables pushed to Firebase
-                     age : age, height: height, weight: weight, targetBodyWeight: targetBodyWeight, 
+                     age : age, height: height, targetBodyWeight: targetBodyWeight,
                      hoursSleep : hoursSleep, daysExercise : daysExercise, maintenanceCalories : maintenanceCalories,
 
                      //Checkbox variables pushed to Firebase
@@ -582,7 +582,7 @@ class _SignUpState extends State<SignUp> {
                      selectedDay : day, 
                      selectedJobActivity : jobActivity);
                     // await insert profile data here
-                    final result = _auth.registerEmailAndPassword(email, password, user);
+                    final result = _auth.registerEmailAndPassword(email, password, user, weight);
                     result.then((value) {
                         Navigator.of(context).pushAndRemoveUntil(PageTransition(widget:  HomePageScreen(homeScreenViewModel: HomeScreenViewModel(DatabaseService()) ,)), (se) => false);
                     }, onError: (error){

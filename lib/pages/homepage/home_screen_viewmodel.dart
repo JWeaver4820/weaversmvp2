@@ -6,6 +6,8 @@ import 'package:weaversmvp/operations/database.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:weaversmvp/pages/auth/subpages/profile_viewmodel.dart';
 
+import '../../models/user.dart';
+
 
 class HomeScreenViewModel extends ProfileViewModel{
 
@@ -16,6 +18,9 @@ class HomeScreenViewModel extends ProfileViewModel{
   final BehaviorSubject<model.User> _profile = BehaviorSubject();
   Stream<model.User> get profile => _profile.stream;
 
+
+  final BehaviorSubject<Weight> _weight = BehaviorSubject();
+  Stream<Weight> get weight => _weight.stream;
   
 
   final StreamController<model.User> _profileV2 = StreamController.broadcast();
@@ -24,6 +29,13 @@ class HomeScreenViewModel extends ProfileViewModel{
   final BehaviorSubject<String> _logOut = BehaviorSubject();
   Stream<String> get logOut => _logOut.stream;
 
+  void getWeight(){
+    dbService?.getWeights().then((value) {
+      _weight.sink.add(value[value.length-1]);
+    }, onError: (exception){
+      _weight.addError(exception);
+    });
+  }
 
   void getUserData(){
      final source = dbService?.getUser(FirebaseAuth.instance.currentUser?.uid);
@@ -32,10 +44,9 @@ class HomeScreenViewModel extends ProfileViewModel{
         
       print("object_object => $event");
       _profile.sink.add(event);
-      }, onError: (erro){
-
+      }, onError: (error){
         
-      _profile.addError(erro);
+      _profile.addError(error);
       });
     }
 
@@ -54,6 +65,6 @@ class HomeScreenViewModel extends ProfileViewModel{
   void dispose(){
     dbService = null;
     //_profile.close();
-    _logOut.close();
+  //  _logOut.close();
   }
 }

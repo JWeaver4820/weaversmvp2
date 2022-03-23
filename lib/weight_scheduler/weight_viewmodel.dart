@@ -44,7 +44,7 @@ class WeightViewModel{
      
  scheduler = Timer.periodic(const Duration(seconds: 60), (timer){{
    //  if(!hasLaunched){
-      _launchWeight.sink.add("");
+      _launchWeight.sink.add("");  // TODO: Uncomment later
       }});
   }
 
