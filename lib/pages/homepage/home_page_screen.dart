@@ -10,6 +10,7 @@ import 'package:weaversmvp/pages/auth/subpages/profile_screen.dart';
 import 'package:weaversmvp/pages/homepage/page_item.dart';
 import 'package:weaversmvp/pages/homepage/settingsform.dart';
 import 'package:weaversmvp/pages/welcome/welcome.dart';
+import 'package:weaversmvp/utils/prefs_manager.dart';
 import 'package:weaversmvp/weight_scheduler/weight_screen.dart';
 
 import 'home_screen_viewmodel.dart';
@@ -31,9 +32,9 @@ class HomePageScreenState extends State<HomePageScreen>{
 
     Widget get _defaultMargin  => const SizedBox(height: 30,);
 
-    final PageController _pageController = PageController();
+    final PageController _pageController = PageController(initialPage: 2);
 
-    final homeScreenViewModel = HomeScreenViewModel(DatabaseService());
+    final homeScreenViewModel = HomeScreenViewModel(DatabaseService(), PrefsManager());
 
 
     @override

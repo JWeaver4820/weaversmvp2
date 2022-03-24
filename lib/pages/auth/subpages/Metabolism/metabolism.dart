@@ -24,7 +24,7 @@ class MetabolismScreen extends StatelessWidget{
 
   BehaviorSubject<int> _pages = BehaviorSubject();
 
-  int page = -2;
+  int page = -1;
 
   @override
   Widget build(BuildContext context) {

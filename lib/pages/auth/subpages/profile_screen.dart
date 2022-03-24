@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:weaversmvp/models/user.dart';
+import 'package:weaversmvp/pages/auth/subpages/Metabolism/weight_list.dart';
 import 'package:weaversmvp/pages/auth/subpages/profile_viewmodel.dart';
 import 'package:weaversmvp/pages/homepage/home_screen_viewmodel.dart';
 import 'package:weaversmvp/utils/dart_exts.dart';
+import 'package:weaversmvp/weight_scheduler/weight_screen.dart';
 
 
 class ProfileScreen extends StatefulWidget{
@@ -55,14 +57,17 @@ class ProfileScreenState extends State<ProfileScreen>{
       // show error
       context.showMesssage(error.toString());
     });
-    widget.homeScreenViewModel.getWeight();
     super.initState();
   }
 
 
   @override
   Widget build(BuildContext context) {
-    
+
+    print("MANY_ERROR_state => ... $context");
+
+    widget.homeScreenViewModel.getWeight(mounted);
+
     return Column(
       
       children: [
@@ -194,6 +199,7 @@ class ProfileScreenState extends State<ProfileScreen>{
 
   @override
   void dispose() {
+
     widget.homeScreenViewModel.dispose();
     super.dispose();
   }

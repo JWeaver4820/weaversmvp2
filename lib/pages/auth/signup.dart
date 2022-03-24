@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:weaversmvp/dialogs/progress_dialog.dart';
 import 'package:weaversmvp/models/user.dart';
@@ -9,6 +11,7 @@ import 'package:weaversmvp/pages/homepage/home_screen_viewmodel.dart';
 import 'package:weaversmvp/sharing/load.dart';
 import 'package:weaversmvp/utils/page_transition.dart';
 import 'package:weaversmvp/pages/homepage/home_page_screen.dart';
+import 'package:weaversmvp/utils/prefs_manager.dart';
 
 //Create the SignUp class used for signing up to the application for the first time
 class SignUp extends StatefulWidget {
@@ -583,14 +586,19 @@ class _SignUpState extends State<SignUp> {
                      selectedJobActivity : jobActivity);
                     // await insert profile data here
                     final result = _auth.registerEmailAndPassword(email, password, user, weight);
-                    result.then((value) {
-                        Navigator.of(context).pushAndRemoveUntil(PageTransition(widget:  HomePageScreen(homeScreenViewModel: HomeScreenViewModel(DatabaseService()) ,)), (se) => false);
-                    }, onError: (error){
-                          // Display error
-                          ScaffoldMessenger.of(context)
-                          .showSnackBar(SnackBar(content: Text(error.toString())));
-                             Navigator.of(context).pop();
-                    });
+                        Future.delayed(const Duration(seconds: 2), (){
+                          result.then((value) {
+                            Navigator.of(context).pushAndRemoveUntil(PageTransition(widget:
+                            HomePageScreen(homeScreenViewModel: HomeScreenViewModel(DatabaseService(), PrefsManager()) ,)), (se) => false);
+
+                          }, onError: (error){
+                            // Display error
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(SnackBar(content: Text(error.toString())));
+                            Navigator.of(context).pop();
+                          });
+                        });
+
 
                    // await _auth.signInWithEmailAndPassword(email, password);
 

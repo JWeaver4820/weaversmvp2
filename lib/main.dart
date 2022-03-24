@@ -11,6 +11,7 @@ import 'package:weaversmvp/pages/welcome/welcome.dart';
 import 'package:provider/provider.dart';
 import 'package:weaversmvp/modeling/user.dart';
 import 'package:weaversmvp/operations/authenticate.dart';
+import 'package:weaversmvp/utils/prefs_manager.dart';
 
 //Main method, run, debug, profile
 void main() async {
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => Welcome(),
         '/signin': (context) => SignIn(),
         '/signup': (context) => SignUp(),
-        '/homepage': (context) => HomePageScreen(homeScreenViewModel: HomeScreenViewModel(DatabaseService())),
+        '/homepage': (context) => HomePageScreen(homeScreenViewModel: HomeScreenViewModel(DatabaseService(), PrefsManager())),
       },
     );
     /*return StreamProvider<FBUser?>.value(

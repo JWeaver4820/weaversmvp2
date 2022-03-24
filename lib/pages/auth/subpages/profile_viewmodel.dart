@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:weaversmvp/models/user.dart' as model;
 import 'package:weaversmvp/operations/database.dart';
+import 'package:weaversmvp/utils/prefs_manager.dart';
 import 'package:weaversmvp/weight_scheduler/weight_viewmodel.dart';
 
 class ProfileViewModel extends WeightViewModel{
@@ -65,7 +66,7 @@ class ProfileViewModel extends WeightViewModel{
 
   DatabaseService? databaseService = DatabaseService.instance;
 
-  ProfileViewModel();
+  ProfileViewModel(): super(prefsManager: PrefsManager());
 
   void setDefaults(model.User? user){
     if(user ==  null)return;

@@ -14,14 +14,16 @@ import 'package:flutter_background_service_android/flutter_background_service_an
 import 'package:flutter_background_service_ios/flutter_background_service_ios.dart';
 
 import '../operations/database.dart';
+import '../utils/prefs_manager.dart';
 
 class WeightViewModel{
 
 
   Timer? scheduler;
 
-  BehaviorSubject<String> _launchWeight = BehaviorSubject<String>() ;
-  Stream<String> get launchWeight => _launchWeight.stream;
+  late PrefsManager prefsManager;
+
+  WeightViewModel({required this.prefsManager});
 
   
   BehaviorSubject<String> _updateWeight = BehaviorSubject<String>() ;
@@ -44,7 +46,7 @@ class WeightViewModel{
      
  scheduler = Timer.periodic(const Duration(seconds: 60), (timer){{
    //  if(!hasLaunched){
-      _launchWeight.sink.add("");  // TODO: Uncomment later
+     // _launchWeight.sink.add("");  // TODO: Uncomment later
       }});
   }
 
@@ -72,6 +74,8 @@ class WeightViewModel{
     try{
        await DatabaseService().updateWeight(Weight(weightKey: "_$myPushId", weightValue: weightValue, createdAt: timestamp ) );
     _updateWeight.sink.add("Weight updated!!");
+       prefsManager.setHasLaunched(true);
+
     }catch(exception){
       _updateWeight.sink.addError(exception);
     }
