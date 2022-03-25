@@ -24,31 +24,26 @@ class MetabolismScreen extends StatelessWidget{
   MetabolismScreen();
 
 
-  BehaviorSubject<int> _pages = BehaviorSubject();
-
-
-  int page = -1;
+  BehaviorSubject<Widget?> _newPage = BehaviorSubject();
 
 
   @override
   Widget build(BuildContext context) {
    // DatabaseService().getWeights();
-   return FutureBuilder<List<Weight>>(builder: (_, snapshot){
+    Widget screen;
+   return FutureBuilder<List<Weight>>(builder: (_, weightSnapsot){
 
 
-     List<Widget> subPages = [WeightListScreen(weighList : snapshot.data,), WeightChart.startWithData(weightList: snapshot.data)];
+     return StreamBuilder<Widget?>(builder: (_, snapshot){
 
-     return StreamBuilder<int>(builder: (_, snapshot){
-
-       return WillPopScope(child: page < 0 ? Column(
+       return WillPopScope(child: snapshot.data == null ? Column(
          children: [
            _buildButton("Weekly Recorded Weight", () {
-             page = 0;
-             _pages.sink.add(page);
+             _newPage.sink.add(WeightListScreen(weighList : weightSnapsot.data,));
            }),
            _buildButton("Weight Chart", () {
-             page = 1;
-             _pages.sink.add(page);
+
+             _newPage.sink.add(WeightChart.startWithData(weightList: weightSnapsot.data,));
            }),
            _buildButton("Current State of Metabolism and Suggestions", () {
 
@@ -56,18 +51,22 @@ class MetabolismScreen extends StatelessWidget{
            })
 
          ],
-       ): subPages[page], onWillPop: () async {
+       ): snapshot.data!, onWillPop: () async {
 
-         if(snapshot.requireData >= 0){
-           _pages.sink.add(-1);
+         if(snapshot.data != null){
+           _newPage.sink.add(null);
            return false;
          }else{
 
            return true;
          }
        });
-     }, stream: _pages.stream, initialData: -1,);
+     }, stream: _newPage.stream, );
    }, future: DatabaseService().getWeights(),);
+  }
+
+  void back(){
+    _newPage.sink.add(null);
   }
 
   Widget _buildButton(String title, Function()? onTap){
