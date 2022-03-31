@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:weaversmvp/models/user.dart';
 import 'package:weaversmvp/pages/auth/subpages/Metabolism/weight_chart.dart';
+import 'package:weaversmvp/pages/auth/subpages/Metabolism/weight_evaluation.dart';
 import 'package:weaversmvp/pages/auth/subpages/Metabolism/weight_list.dart';
 import 'package:weaversmvp/pages/auth/subpages/profile_screen.dart';
 import 'package:weaversmvp/pages/homepage/home_screen_viewmodel.dart';
@@ -47,7 +48,7 @@ class MetabolismScreen extends StatelessWidget{
            }),
            _buildButton("Current State of Metabolism and Suggestions", () {
 
-             //_pages.sink.add(page++);
+             _newPage.sink.add(WeightEvaluationScreen());
            })
 
          ],
