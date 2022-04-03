@@ -4,7 +4,7 @@ import 'package:weaversmvp/utils/page_transition.dart';
 
 extension BuildContextExt on BuildContext{
 
-  void showMesssage(String msg){
+  void showMessage(String msg){
     ScaffoldMessenger.of(this).showSnackBar(SnackBar(content: Text(msg)));
   }
   

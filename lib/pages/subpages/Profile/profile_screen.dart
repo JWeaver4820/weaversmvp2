@@ -46,12 +46,12 @@ class ProfileScreenState extends State<ProfileScreen>{
       }else{
       print("MANY_ERROR => LOADING... $event");
         // Display success
-      context.showMesssage("You've successfully updated your profile");
+      context.showMessage("You've successfully updated your profile");
       }
     }, onError: (error){
       print("MANY_ERROR => LOADING... $error");
       // show error
-      context.showMesssage(error.toString());
+      context.showMessage(error.toString());
     });
     super.initState();
   }
