@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:weaversmvp/models/user.dart';
 
-class UserManager {
+class UserManager{
 
 
     static void saveUser(User user)async{
