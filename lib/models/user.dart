@@ -1,9 +1,6 @@
 import 'dart:core';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-class User{
-
+class User {
   //admin fields
   late int currentStep = 0;
   String error = '';
@@ -25,7 +22,7 @@ class User{
   String? maintainWeight;
   String? selectedJobActivity;
   String? selectedDay;
-  String? selectedGender; 
+  String? selectedGender;
 
   //checkbox boolean fields
   bool? breakfast;
@@ -34,15 +31,32 @@ class User{
   bool? mexican;
   bool? chinese;
 
+  // List of weights
   Weight? weights;
 
-  User({ this.age, required this.height, required this.targetBodyWeight, this.gainWeight,
-          this.maintainWeight, this.loseWeight, this.american,  this.italian, this.mexican, this.chinese, this.breakfast, 
-           required this.selectedGender, required this.selectedDay, required this.hoursSleep, required this.daysExercise,
-            required this.selectedJobActivity, required this.maintenanceCalories, this.weights});
+  // User profile constructor
+  User(
+      {this.age,
+      required this.height,
+      required this.targetBodyWeight,
+      this.gainWeight,
+      this.maintainWeight,
+      this.loseWeight,
+      this.american,
+      this.italian,
+      this.mexican,
+      this.chinese,
+      this.breakfast,
+      required this.selectedGender,
+      required this.selectedDay,
+      required this.hoursSleep,
+      required this.daysExercise,
+      required this.selectedJobActivity,
+      required this.maintenanceCalories,
+      this.weights});
 
-
-  User.fromJson(Map<String, dynamic> json){
+  // Method mapping the data from the Firebase database to a User Object
+  User.fromJson(Map<String, dynamic> json) {
     height = json['height'];
     targetBodyWeight = json['targetBodyWeight'];
     age = json['age'];
@@ -63,8 +77,9 @@ class User{
     weights = json['weights'] == null ? null : Weight.fromJson(json['weights']);
   }
 
-  Map<String, dynamic> toJson(){
-    Map<String, dynamic> json ={};
+  // Method mapping data from SignUp to a Json file to be pushed to Firebase
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
     json['height'] = height;
     json['targetBodyWeight'] = targetBodyWeight;
     json['age'] = age;
@@ -85,22 +100,30 @@ class User{
     json['weights'] = weights;
     return json;
   }
-
 }
 
-class Weight{
+// Class for weight list being stored over time
+class Weight {
   String? weightKey;
   int? weightValue;
   dynamic createdAt;
 
-  Weight({required this.weightKey, required this.weightValue, required this.createdAt});
+  //Constructor for weight
+  Weight(
+      {required this.weightKey,
+      required this.weightValue,
+      required this.createdAt});
 
-  factory Weight.fromJson(Map<String, dynamic> json){
-   // Timestamp.fromDate(DateTime.parse(json['createdAt']));
-    return Weight(weightKey: json['weightKey'], weightValue: json['weightValue'], createdAt: json['createdAt']);
+  // Mapping data from Firebase database to the Weight object
+  factory Weight.fromJson(Map<String, dynamic> json) {
+    return Weight(
+        weightKey: json['weightKey'],
+        weightValue: json['weightValue'],
+        createdAt: json['createdAt']);
   }
 
-  Map<String, dynamic> toJson(){
+  // Method mapping the Weight object to a Json object
+  Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
     json['weightKey'] = weightKey;
     json['weightValue'] = weightValue;

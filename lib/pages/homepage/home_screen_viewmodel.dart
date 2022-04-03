@@ -1,13 +1,11 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:weaversmvp/models/user.dart' as model;
 import 'package:weaversmvp/operations/database.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:weaversmvp/pages/auth/subpages/profile_viewmodel.dart';
+import 'package:weaversmvp/pages/subpages/Profile/profile_viewmodel.dart';
 import 'package:weaversmvp/utils/prefs_manager.dart';
-
 import '../../models/user.dart';
 
 
@@ -15,7 +13,7 @@ class HomeScreenViewModel extends ProfileViewModel{
 
   DatabaseService? dbService;
 
-  PrefsManager _prefsManager;
+  final PrefsManager _prefsManager;
 
   HomeScreenViewModel(this.dbService, this._prefsManager){
    promptForWeight();
@@ -97,9 +95,8 @@ class HomeScreenViewModel extends ProfileViewModel{
     );
   }
 
+  @override
   void dispose(){
     dbService = null;
-    //_profile.close();
-  //  _logOut.close();
   }
 }

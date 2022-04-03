@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:weaversmvp/modeling/user.dart';
 import 'package:weaversmvp/pages/auth/signin.dart';
 import 'package:weaversmvp/pages/auth/signup.dart';
-import 'package:weaversmvp/pages/homepage/homepage.dart';
-import 'package:provider/provider.dart';
 import 'package:weaversmvp/utils/page_transition.dart';
 
 
@@ -16,21 +13,6 @@ class Welcome extends StatefulWidget {
 
 //Create the wrapper class and keys
 class _WelcomeState extends State<Welcome> {
-  
-  @override
-  void initState() {
-    super.initState();
-
-    checkAuth();
-  }
-
-  void checkAuth() {
-     final user = Provider.of<FBUser?>(context);
-     if (user != null) {
-       Navigator.push(context, PageTransition(widget: Homepage()));
-       return;
-     }
-  }
 
   @override
  Widget build(BuildContext context) => Scaffold(

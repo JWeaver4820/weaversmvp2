@@ -1,18 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:weaversmvp/models/user.dart' as model;
 import 'package:weaversmvp/operations/database.dart';
-import 'package:weaversmvp/pages/auth/signup.dart';
-import 'package:weaversmvp/pages/auth/subpages/mealplan.dart';
-import 'package:weaversmvp/pages/auth/subpages/Metabolism/metabolism.dart';
-import 'package:weaversmvp/pages/auth/subpages/profile_screen.dart';
+import 'package:weaversmvp/pages/subpages/MealPlan/mealplan.dart';
+import 'package:weaversmvp/pages/subpages/Metabolism/metabolism.dart';
+import 'package:weaversmvp/pages/subpages/Profile/profile_screen.dart';
 import 'package:weaversmvp/pages/homepage/page_item.dart';
-import 'package:weaversmvp/pages/homepage/settingsform.dart';
 import 'package:weaversmvp/pages/welcome/welcome.dart';
 import 'package:weaversmvp/utils/prefs_manager.dart';
-import 'package:weaversmvp/weight_scheduler/weight_screen.dart';
-
+import 'package:weaversmvp/pages/weight_scheduler/weight_screen.dart';
 import 'home_screen_viewmodel.dart';
 import 'package:weaversmvp/utils/dart_exts.dart';
 
@@ -95,17 +89,6 @@ class HomePageScreenState extends State<HomePageScreen>{
 
             ),
 
-            TextButton.icon(
-
-              style: TextButton.styleFrom(primary: Colors.teal[50]),
-              icon: const Icon(Icons.settings),
-              label: const Text('Edit Profile'),
-              onPressed: (){
-                _showSettingsPanel();
-              },
-
-            )
-
           ],
 
         ),
@@ -134,7 +117,6 @@ class HomePageScreenState extends State<HomePageScreen>{
         return Container(
 
           padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-          child: SettingsForm(),
 
         );
 

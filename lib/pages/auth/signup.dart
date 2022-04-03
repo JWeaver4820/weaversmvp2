@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:weaversmvp/dialogs/progress_dialog.dart';
 import 'package:weaversmvp/models/user.dart';
@@ -7,8 +6,6 @@ import 'package:weaversmvp/operations/authenticate.dart';
 import 'package:weaversmvp/operations/database.dart';
 import 'package:weaversmvp/pages/auth/signin.dart';
 import 'package:weaversmvp/pages/homepage/home_screen_viewmodel.dart';
-// import 'package:weaversmvp/pages/homepage/homepage.dart.bak';
-import 'package:weaversmvp/sharing/load.dart';
 import 'package:weaversmvp/utils/page_transition.dart';
 import 'package:weaversmvp/pages/homepage/home_page_screen.dart';
 import 'package:weaversmvp/utils/prefs_manager.dart';
@@ -568,9 +565,10 @@ class _SignUpState extends State<SignUp> {
                 //Create state for username / password creation - authentication, store in Firebase database
                 onPressed: () async {
                   if(_needKey.currentState!.validate()){
-                        Dialogs.showLoading(context);
-                    // ToDo: push state to firebase 
-                    final user = User(
+                    //
+                     Dialogs.showLoading(context);
+                     // ToDo: push state to firebase
+                     final user = User(
                      //Integer variables pushed to Firebase
                      age : age, height: height, targetBodyWeight: targetBodyWeight,
                      hoursSleep : hoursSleep, daysExercise : daysExercise, maintenanceCalories : maintenanceCalories,
@@ -584,7 +582,8 @@ class _SignUpState extends State<SignUp> {
                      selectedGender : gender, 
                      selectedDay : day, 
                      selectedJobActivity : jobActivity);
-                    // await insert profile data here
+
+                     // await insert profile data here
                     final result = _auth.registerEmailAndPassword(email, password, user, weight);
                         Future.delayed(const Duration(seconds: 2), (){
                           result.then((value) {
