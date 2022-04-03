@@ -10,6 +10,7 @@ import 'package:weaversmvp/pages/auth/subpages/profile_screen.dart';
 import 'package:weaversmvp/pages/homepage/page_item.dart';
 import 'package:weaversmvp/pages/homepage/settingsform.dart';
 import 'package:weaversmvp/pages/welcome/welcome.dart';
+import 'package:weaversmvp/utils/prefs_manager.dart';
 import 'package:weaversmvp/weight_scheduler/weight_screen.dart';
 
 import 'home_screen_viewmodel.dart';
@@ -31,10 +32,14 @@ class HomePageScreenState extends State<HomePageScreen>{
 
     Widget get _defaultMargin  => const SizedBox(height: 30,);
 
-    final PageController _pageController = PageController();
+    final PageController _pageController = PageController(initialPage: 2);
 
-    final homeScreenViewModel = HomeScreenViewModel(DatabaseService());
+    final homeScreenViewModel = HomeScreenViewModel(DatabaseService(), PrefsManager());
 
+
+    MetabolismScreen newScreen =  MetabolismScreen();
+
+    int curPage = 0;
 
     @override
   void initState() {
@@ -50,9 +55,11 @@ class HomePageScreenState extends State<HomePageScreen>{
 
 
   homeScreenViewModel.launchWeight.listen((event) {
-    Navigator.push(context, MaterialPageRoute(builder: (settings){
+    if(mounted){
+      Navigator.push(context, MaterialPageRoute(builder: (settings){
         return WeightScreen();
-    }));
+      }));
+    }
 
   }, onError: (error){
       print("There is an error => $error");
@@ -67,6 +74,7 @@ class HomePageScreenState extends State<HomePageScreen>{
   Widget build(BuildContext context) {
  
    homeScreenViewModel.getUserData();
+
 
     return Scaffold(
       appBar: AppBar(
@@ -110,7 +118,7 @@ class HomePageScreenState extends State<HomePageScreen>{
         _defaultMargin,
         _buildTopButton(),
         _defaultMargin,
-        Expanded(child: _buildBody(), flex: 0,)
+        _buildBody()
       ],
     ),)),
     );
@@ -144,6 +152,12 @@ class HomePageScreenState extends State<HomePageScreen>{
     return Row(
       children:menus.map((e) => Expanded(child: InkWell(
         onTap: (){
+          if(curPage == e.page){
+            if(curPage == 1){
+              newScreen.back();
+            }
+            return;
+          }
           // Change page
           _pageController.jumpToPage(e.page);
        
@@ -189,12 +203,15 @@ class HomePageScreenState extends State<HomePageScreen>{
       width: double.maxFinite,
       height: double.maxFinite,
       child: PageView(
-        
+        onPageChanged: (index){
+          print("print => $curPage == $index");
+          curPage = index;
+        },
       controller: _pageController,
         children: [
           const MealPlanScreen(),
-           MetabolismScreen(),
-          ProfileScreen(homeScreenViewModel:  
+          newScreen,
+          ProfileScreen(homeScreenViewModel:
           homeScreenViewModel
           )
         ],

@@ -29,8 +29,8 @@ class DatabaseService {
   //This is the reference to the collection of data used within the application
   final CollectionReference dietData = FirebaseFirestore.instance.collection('diets');
 
-  Future<void> updateFBUserData(uid, {required model.User user}) async {
-
+  Future<void> updateFBUserData(uid, {required model.User user, required model.Weight weight}) async {
+    final weightResult = await dietData.doc(uid).collection("weights").doc().set(weight.toJson());
     return await dietData.doc(uid).set(user.toJson());
 
   }
@@ -47,7 +47,7 @@ class DatabaseService {
   Future<List<model.Weight>> getWeights() async{
     final uId = FirebaseAuth.instance.currentUser?.uid ?? "";
 
-    final result = await dietData.doc(uId).collection("weights").get();
+    final result = await dietData.doc(uId).collection("weights").orderBy("createdAt").get();
     print("__>${result.docs[0].data()}");
     return result.docs.map((e) => Weight.fromJson(e.data())).toList();
   }

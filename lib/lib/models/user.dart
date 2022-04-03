@@ -1,5 +1,7 @@
 import 'dart:core';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class User{
 
   //admin fields
@@ -10,7 +12,6 @@ class User{
   String password = '';
 
   //dropdown integer fields
-  int? weight; 
   int? height;
   int? targetBodyWeight;
   int? age;
@@ -35,14 +36,13 @@ class User{
 
   Weight? weights;
 
-  User({ this.age, required this.height, required this.targetBodyWeight, this.gainWeight, required this.weight, 
+  User({ this.age, required this.height, required this.targetBodyWeight, this.gainWeight,
           this.maintainWeight, this.loseWeight, this.american,  this.italian, this.mexican, this.chinese, this.breakfast, 
            required this.selectedGender, required this.selectedDay, required this.hoursSleep, required this.daysExercise,
             required this.selectedJobActivity, required this.maintenanceCalories, this.weights});
 
 
   User.fromJson(Map<String, dynamic> json){
-    weight = json['weight'];
     height = json['height'];
     targetBodyWeight = json['targetBodyWeight'];
     age = json['age'];
@@ -65,7 +65,6 @@ class User{
 
   Map<String, dynamic> toJson(){
     Map<String, dynamic> json ={};
-    json['weight'] = weight;
     json['height'] = height;
     json['targetBodyWeight'] = targetBodyWeight;
     json['age'] = age;
@@ -92,17 +91,20 @@ class User{
 class Weight{
   String? weightKey;
   int? weightValue;
+  dynamic createdAt;
 
-  Weight({required this.weightKey, required this.weightValue});
+  Weight({required this.weightKey, required this.weightValue, required this.createdAt});
 
   factory Weight.fromJson(Map<String, dynamic> json){
-    return Weight(weightKey: json['weightKey'], weightValue: json['weightValue']);
+   // Timestamp.fromDate(DateTime.parse(json['createdAt']));
+    return Weight(weightKey: json['weightKey'], weightValue: json['weightValue'], createdAt: json['createdAt']);
   }
 
   Map<String, dynamic> toJson(){
     Map<String, dynamic> json = {};
     json['weightKey'] = weightKey;
     json['weightValue'] = weightValue;
+    json['createdAt'] = createdAt;
     return json;
   }
 }

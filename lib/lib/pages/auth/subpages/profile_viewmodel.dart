@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:weaversmvp/models/user.dart' as model;
 import 'package:weaversmvp/operations/database.dart';
+import 'package:weaversmvp/utils/prefs_manager.dart';
 import 'package:weaversmvp/weight_scheduler/weight_viewmodel.dart';
 
 class ProfileViewModel extends WeightViewModel{
@@ -64,7 +66,7 @@ class ProfileViewModel extends WeightViewModel{
 
   DatabaseService? databaseService = DatabaseService.instance;
 
-  ProfileViewModel();
+  ProfileViewModel(): super(prefsManager: PrefsManager());
 
   void setDefaults(model.User? user){
     if(user ==  null)return;
@@ -72,7 +74,7 @@ class ProfileViewModel extends WeightViewModel{
     onAgeChanged(user.age);
     onHeightChanged(user.height);
     onTargetChanged(user.targetBodyWeight);
-    onWeightChanged(user.weight);
+   // onWeightChanged(user.weight);
     onHoursSleepChanged(user.hoursSleep);
     onMaintenanceCaloriesChanged(user.maintenanceCalories);
     onDaysExerciseChanged(user.daysExercise);
@@ -197,8 +199,7 @@ class ProfileViewModel extends WeightViewModel{
     _updateProfile.sink.add(null);
     final user = model.User(
     age: strAge, 
-    height: strHeight, 
-    weight: strWeight,
+    height: strHeight,
     targetBodyWeight: strTarget,
     hoursSleep: strHoursSleep, 
     daysExercise: strDaysExercise,
@@ -219,7 +220,7 @@ class ProfileViewModel extends WeightViewModel{
 
      //update and display update message
      await DatabaseService().updateFBUserData(FirebaseAuth.instance.currentUser?.uid, 
-     user: user );
+     user: user, weight: model.Weight(weightKey: "weightKey", weightValue: strWeight, createdAt: FieldValue.serverTimestamp()) );
      print("myuser => ${user.toJson()} ");
      _updateProfile.sink.add("Update successful");
 

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ffi';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cron/cron.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
@@ -13,14 +14,16 @@ import 'package:flutter_background_service_android/flutter_background_service_an
 import 'package:flutter_background_service_ios/flutter_background_service_ios.dart';
 
 import '../operations/database.dart';
+import '../utils/prefs_manager.dart';
 
 class WeightViewModel{
 
 
   Timer? scheduler;
 
-  BehaviorSubject<String> _launchWeight = BehaviorSubject<String>() ;
-  Stream<String> get launchWeight => _launchWeight.stream;
+  late PrefsManager prefsManager;
+
+  WeightViewModel({required this.prefsManager});
 
   
   BehaviorSubject<String> _updateWeight = BehaviorSubject<String>() ;
@@ -41,11 +44,9 @@ class WeightViewModel{
     await service.configure(iosConfiguration: IosConfiguration(onBackground: onIOSBackground, onForeground: onStart, autoStart: true),
      androidConfiguration: AndroidConfiguration(onStart: onStart, isForegroundMode: false, autoStart: true));
      
-  scheduler = Timer.periodic(const Duration(seconds: 10), (timer){{
+ scheduler = Timer.periodic(const Duration(seconds: 60), (timer){{
    //  if(!hasLaunched){
-      // _launchWeight.sink.add("");
-      print("RUNNING STILL");
-      
+     // _launchWeight.sink.add("");  // TODO: Uncomment later
       }});
   }
 
@@ -65,12 +66,16 @@ class WeightViewModel{
         }*/
     });
   }
-
+//update hi
   void updateWeights(int weightValue) async{
+    final timestamp = FieldValue.serverTimestamp();
+
     final myPushId = DateTime.now().millisecond;
     try{
-       await DatabaseService().updateWeight(Weight(weightKey: "_$myPushId", weightValue: weightValue) );
+       await DatabaseService().updateWeight(Weight(weightKey: "_$myPushId", weightValue: weightValue, createdAt: timestamp ) );
     _updateWeight.sink.add("Weight updated!!");
+       prefsManager.setHasLaunched(true);
+
     }catch(exception){
       _updateWeight.sink.addError(exception);
     }

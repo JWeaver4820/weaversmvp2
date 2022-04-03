@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:weaversmvp/global_state.dart';
 import 'package:weaversmvp/modeling/user.dart';
@@ -53,13 +54,14 @@ class AuthService {
     }
 
   //Sign Up with email and password and instantiate default profile information
-    Future<String> registerEmailAndPassword(String email, String password, model.User user) async{
+    Future<String> registerEmailAndPassword(String email, String password, model.User user, int? weight) async{
 
     
      try{
         UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       User currentUser = result.user!; 
-      fbDb.updateFBUserData(currentUser.uid, user: user);
+      fbDb.updateFBUserData(currentUser.uid, user: user, weight: model.Weight(weightKey: "weightKey",
+          weightValue: weight, createdAt: FieldValue.serverTimestamp()));
     
       return Future.value("Your sign up was successful!");
      }catch(error, trace){

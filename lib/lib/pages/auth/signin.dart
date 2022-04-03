@@ -7,6 +7,7 @@ import 'package:weaversmvp/pages/homepage/home_page_screen.dart';
 import 'package:weaversmvp/pages/homepage/home_screen_viewmodel.dart';
 import 'package:weaversmvp/sharing/load.dart';
 import 'package:weaversmvp/utils/page_transition.dart';
+import 'package:weaversmvp/utils/prefs_manager.dart';
 import 'package:weaversmvp/utils/user_manager.dart';
 
 //Create the SignIn class used for signing in to the application after signing up
@@ -137,7 +138,7 @@ String password = '';
                    }else{
                     // UserManager.saveUser(user);
                            Navigator.of(context).pushAndRemoveUntil(PageTransition(widget: 
-                            HomePageScreen(homeScreenViewModel: HomeScreenViewModel(DatabaseService()) ,)),
+                            HomePageScreen(homeScreenViewModel: HomeScreenViewModel(DatabaseService(), PrefsManager()) ,)),
                              (se) => false);
                   
                    }

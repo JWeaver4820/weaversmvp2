@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:weaversmvp/models/user.dart';
+import 'package:weaversmvp/pages/auth/subpages/Metabolism/weight_list.dart';
 import 'package:weaversmvp/pages/auth/subpages/profile_viewmodel.dart';
 import 'package:weaversmvp/pages/homepage/home_screen_viewmodel.dart';
 import 'package:weaversmvp/utils/dart_exts.dart';
+import 'package:weaversmvp/weight_scheduler/weight_screen.dart';
 
 
 class ProfileScreen extends StatefulWidget{
@@ -61,7 +63,11 @@ class ProfileScreenState extends State<ProfileScreen>{
 
   @override
   Widget build(BuildContext context) {
-    
+
+    print("MANY_ERROR_state => ... $context");
+
+    widget.homeScreenViewModel.getWeight(mounted);
+
     return Column(
       
       children: [
@@ -111,10 +117,11 @@ class ProfileScreenState extends State<ProfileScreen>{
     }
 
   return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           //Integer edit profile options
           _buildDropDown<int?>(List.generate(72, (val) => 24 +val), user.height, viewModel.heightStream, viewModel.onHeightChanged,suffix : "inches tall"),
-          _buildDropDown<int?>(List.generate(450, (val) => 50 +val), user.weight, viewModel.weightStream, viewModel.onWeightChanged, suffix : "lbs Current Weight"),
+          _buildCurrentWeight(viewModel.weight, "lbs Current Weight"),
           _buildDropDown<int?>(List.generate(120, (val) => 18 +val), user.age, viewModel.ageStream, viewModel.onAgeChanged, suffix :"years old" ),
           _buildDropDown<int?>(List.generate(450, (val) => 50 +val), user.targetBodyWeight, viewModel.targetStream, viewModel.onTargetChanged, suffix : "lbs Target Body Weight"),
           _buildDropDown<int?>(List.generate(12, (val) =>   1 +val), user.hoursSleep, viewModel.hoursSleepStream, viewModel.onHoursSleepChanged, suffix : "hours of sleep/night"),
@@ -152,6 +159,17 @@ class ProfileScreenState extends State<ProfileScreen>{
     );
     }, stream: stream,);  
   }
+
+  Widget _buildCurrentWeight(Stream<Weight> stream, String text){
+     return StreamBuilder<Weight>(builder: (_, snapshot){
+
+       if(snapshot.hasError){
+         return const Text("An error has occurred", textAlign: TextAlign.start,);
+       }
+       final weight = snapshot.data;
+       return Text("${weight?.weightValue ?? 0} $text", textAlign: TextAlign.start,);
+     }, stream: stream,);
+  }
   
   DropdownMenuItem<T> _buildStreamButton<T>(T e, String suffix){
    
@@ -161,13 +179,15 @@ class ProfileScreenState extends State<ProfileScreen>{
       child: Text("$e $suffix", style: TextStyle(color: Colors.black),),);
   }
 
-  Widget _buildDropDown <T>(List<T> items, T value, Stream<T> stream, Function(T?) onChanged,{ String suffix = ""}){
+  Widget _buildDropDown <T>(List<T> items, T value,
+      Stream<T> stream, Function(T?) onChanged,{ String suffix = "", bool isEnabled = true}){
   // tempValue = value ;
     return StreamBuilder<T>(builder: (contex, snapshot){
  
-      return DropdownButton<T>(items: items.map((value) => _buildStreamButton<T>(value, suffix))
+      return DropdownButton<T>(
+        items: items.map((value) => _buildStreamButton<T>(value, suffix))
       .toList(), icon: const Icon(Icons.arrow_downward),
-      onChanged: onChanged,
+      onChanged: isEnabled ?onChanged : null,
       isExpanded: true,
       hint: Text( "${snapshot.data} $suffix"),
        //value: snapshot.data ,
@@ -179,6 +199,7 @@ class ProfileScreenState extends State<ProfileScreen>{
 
   @override
   void dispose() {
+
     widget.homeScreenViewModel.dispose();
     super.dispose();
   }

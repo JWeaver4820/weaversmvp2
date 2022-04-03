@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:weaversmvp/weight_scheduler/weight_viewmodel.dart';
 
+import '../utils/prefs_manager.dart';
+
 class WeightScreen extends StatefulWidget{
  
   WeightScreen({Key? key});
@@ -18,7 +20,7 @@ class WeightScreenState extends State<WeightScreen>{
 
   bool isPop = false;
   
-  final weightViewModel = WeightViewModel();
+  final weightViewModel = WeightViewModel(prefsManager: PrefsManager());
 
   TextEditingController weightController = TextEditingController();
 

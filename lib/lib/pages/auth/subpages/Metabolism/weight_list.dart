@@ -6,9 +6,9 @@ import 'package:weaversmvp/models/user.dart';
 
 class WeightListScreen extends StatefulWidget{
 
-  Stream<List<Weight>>? weighStreamList;
+  List<Weight>? weighList;
   
-  WeightListScreen({ this.weighStreamList});
+  WeightListScreen({ this.weighList});
   
   @override
   WeightListScreenState createState() {
@@ -23,24 +23,25 @@ class WeightListScreenState extends State<WeightListScreen>{
 
     @override
     Widget build(BuildContext context){
-      return StreamBuilder<List<Weight>?>(builder: (contex, snapshot){
-        List<Weight> weights = snapshot.data ?? [];
-        return Container(
-          height: 300,
-          color: Colors.amber,
-          child: Column(
-        children: [
-          ListView.builder(itemBuilder: (context, index){
-            Weight weight =weights[index];
+
+      final  List<Weight>? weights = widget.weighList;
+      print("WEIGHTS => $weights");
+
+      return weights == null || weights.isEmpty ? Container(): Container(
+        height: 300,
+        color: Colors.amber,
+        child: Column(
+          children: [
+            ListView.builder(itemBuilder: (context, index){
+              Weight weight =weights[index];
               return ListTile(
-            
+
                 title: Text(weight.weightValue.toString()),
               );
-          }, itemCount: weights.length,
-           shrinkWrap: true,)
-        ],
-      ),
-        );
-      }, stream: widget.weighStreamList,);
+            }, itemCount: weights.length,
+              shrinkWrap: true,)
+          ],
+        ),
+      );
     }
 }
