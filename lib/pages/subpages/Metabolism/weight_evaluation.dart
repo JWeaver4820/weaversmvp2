@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:moving_average/moving_average.dart';
 
 class WeightEvaluationScreen extends  StatefulWidget{
 

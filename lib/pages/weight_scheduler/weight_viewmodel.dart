@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:moving_average/moving_average.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:weaversmvp/models/user.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
@@ -20,29 +21,13 @@ class WeightViewModel{
 
   WeightViewModel({required this.prefsManager});
 
-  
   BehaviorSubject<String> _updateWeight = BehaviorSubject<String>() ;
   Stream<String> get updateWeight => _updateWeight.stream;
 
  // bool hasLaunched = false;
 
   void runTask() async{
-    print("Started task....");
-     WidgetsFlutterBinding.ensureInitialized();
-     if(Platform.isAndroid){
-       FlutterBackgroundServiceAndroid.registerWith();
-     }else if(Platform.isIOS){
-       FlutterBackgroundServiceIOS.registerWith();
-     }
 
-    final service = FlutterBackgroundService();
-    await service.configure(iosConfiguration: IosConfiguration(onBackground: onIOSBackground, onForeground: onStart, autoStart: true),
-     androidConfiguration: AndroidConfiguration(onStart: onStart, isForegroundMode: false, autoStart: true));
-     
- scheduler = Timer.periodic(const Duration(seconds: 60), (timer){{
-   //  if(!hasLaunched){
-     // _launchWeight.sink.add("");  // TODO: Uncomment later
-      }});
   }
 
   void onStart(){
@@ -75,6 +60,7 @@ class WeightViewModel{
       _updateWeight.sink.addError(exception);
     }
   }
+
 
   void dispose(){
     _updateWeight.close();
