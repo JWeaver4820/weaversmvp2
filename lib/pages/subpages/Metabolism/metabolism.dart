@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:weaversmvp/models/user.dart';
+import 'package:weaversmvp/pages/homepage/home_screen_viewmodel.dart';
 import 'package:weaversmvp/pages/subpages/Metabolism/weight_chart.dart';
 import 'package:weaversmvp/pages/subpages/Metabolism/weight_evaluation.dart';
 import 'package:weaversmvp/pages/subpages/Metabolism/weight_list.dart';
+import 'package:weaversmvp/pages/weight_scheduler/weight_viewmodel.dart';
 import '../../../../operations/database.dart';
 
 class MetabolismScreen extends StatelessWidget{
 
-  MetabolismScreen();
+
+  HomeScreenViewModel? homeScreenViewModel;
+
+  MetabolismScreen(this.homeScreenViewModel);
 
 
   BehaviorSubject<Widget?> _newPage = BehaviorSubject();
@@ -19,7 +24,6 @@ class MetabolismScreen extends StatelessWidget{
    // DatabaseService().getWeights();
     Widget screen;
    return FutureBuilder<List<Weight>>(builder: (_, weightSnapsot){
-
 
      return StreamBuilder<Widget?>(builder: (_, snapshot){
 
@@ -34,7 +38,8 @@ class MetabolismScreen extends StatelessWidget{
            }),
            _buildButton("Current State of Metabolism and Suggestions", () {
 
-             _newPage.sink.add(WeightEvaluationScreen());
+             _newPage.sink.add(StreamBuilder<num>(builder: (_, snapshot) => WeightEvaluationScreen(snapshot.data, userProfile: homeScreenViewModel?.profile,),
+               stream: homeScreenViewModel?.movingAvgDifferences,));
            })
 
          ],

@@ -38,6 +38,9 @@ class HomeScreenViewModel extends ProfileViewModel{
   final BehaviorSubject<String> _logOut = BehaviorSubject();
   Stream<String> get logOut => _logOut.stream;
 
+  final BehaviorSubject<num> _movingAvgDifferences = BehaviorSubject();
+  Stream<num> get movingAvgDifferences => _movingAvgDifferences.stream;
+
   void promptForWeight() async{
     final hasLaunched = await _prefsManager.getHasLaunched();
 
@@ -83,7 +86,7 @@ class HomeScreenViewModel extends ProfileViewModel{
       print("Moving avg. differences => $movingAvgDifferences");
       num differencesAverage = movingAvgDifferences.fold(0, (previousValue, element) => previousValue + element) ;
       num result = differencesAverage / len;
-
+      _movingAvgDifferences.sink.add(result);
       print("Moving avg. differences => $result");
     }
 

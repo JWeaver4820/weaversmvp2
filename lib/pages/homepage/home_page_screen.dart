@@ -31,7 +31,7 @@ class HomePageScreenState extends State<HomePageScreen>{
     final homeScreenViewModel = HomeScreenViewModel(DatabaseService(), PrefsManager());
 
 
-    MetabolismScreen newScreen =  MetabolismScreen();
+    MetabolismScreen? newScreen;
 
     int curPage = 0;
 
@@ -66,9 +66,10 @@ class HomePageScreenState extends State<HomePageScreen>{
   
   @override
   Widget build(BuildContext context) {
- 
-   homeScreenViewModel.getUserData();
 
+    newScreen =  MetabolismScreen( homeScreenViewModel);
+
+   homeScreenViewModel.getUserData();
 
     return Scaffold(
       appBar: AppBar(
@@ -136,7 +137,7 @@ class HomePageScreenState extends State<HomePageScreen>{
         onTap: (){
           if(curPage == e.page){
             if(curPage == 1){
-              newScreen.back();
+              newScreen?.back();
             }
             return;
           }
@@ -192,7 +193,7 @@ class HomePageScreenState extends State<HomePageScreen>{
       controller: _pageController,
         children: [
           const MealPlanScreen(),
-          newScreen,
+          newScreen!,
           ProfileScreen(homeScreenViewModel:
           homeScreenViewModel
           )

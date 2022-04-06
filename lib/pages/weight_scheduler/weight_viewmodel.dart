@@ -8,14 +8,14 @@ import 'package:rxdart/rxdart.dart';
 import 'package:weaversmvp/models/user.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:flutter_background_service_ios/flutter_background_service_ios.dart';
+import 'package:weaversmvp/pages/homepage/home_screen_viewmodel.dart';
 import 'package:weaversmvp/utils/prefs_manager.dart';
 import '../../operations/database.dart';
+import '../subpages/Profile/profile_viewmodel.dart';
 
 
-class WeightViewModel{
+class WeightViewModel {
 
-
-  Timer? scheduler;
 
   late PrefsManager prefsManager;
 

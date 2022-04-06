@@ -4,7 +4,9 @@ import 'package:weaversmvp/pages/weight_scheduler/weight_viewmodel.dart';
 import '../../utils/prefs_manager.dart';
 
 class WeightScreen extends StatefulWidget{
- 
+
+  num? movingAvgDifferences;
+
   WeightScreen({Key? key});
  
   @override
